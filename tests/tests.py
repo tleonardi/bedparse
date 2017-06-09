@@ -1,5 +1,5 @@
 import unittest
-import bedParse.bedLine
+import bedparse.bedLine
 
 class KnownValues(unittest.TestCase):
     known_promoters = ( 

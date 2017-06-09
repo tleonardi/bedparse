@@ -1,13 +1,17 @@
 from setuptools import setup
 
 setup(name='bedParse',
-      version='0.0.1a',
       description='A simple library and CLI tool to manipulate BED files',
+      version="0.0.1a",
       url='https://github.com/tleonardi/bedParse',
       author='Tommaso Leonardi',
       author_email='tom@tleo.io',
       license='MIT',
-      packages=['bedParse'],
+      packages=['bedparse'],
       install_requires=['argparse'],
-      scripts=['bin/bedParse'],
+      entry_points={
+          'console_scripts': [
+              'bedparse = bedparse.bedparse:main'
+          ]
+      },
       zip_safe=False)
