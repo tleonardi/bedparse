@@ -3,6 +3,7 @@ import signal
 import argparse
 import sys
 import csv
+from _version import __version__
 from bedParse.bedLine import *
 # This allows using the program in a pipe
 # The program is killed when it receives a sigpipe
@@ -59,7 +60,7 @@ def filter(args):
 parser = argparse.ArgumentParser(
         """This tool performs various simple operations on BED files.""")
 
-parser.add_argument('--version', '-v', action='version', version='%(prog)s 0.0.1a')
+parser.add_argument('--version', '-v', action='version', version='%(prog)s v'+__version__)
 subparsers = parser.add_subparsers(help='sub-command help')
 
 # create the parser for the "a" command
