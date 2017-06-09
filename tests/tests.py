@@ -62,12 +62,7 @@ class KnownValues(unittest.TestCase):
             (["chr1", 100, 500, "Name", 0, "-", 200, 300, ".", 1, "400,", "0,"], ["chr1", 200, 300, "Name", 0, "-", 200,300, ".", 1, "100,", "0,"]),
             (["chr1", 100, 500, "Name", 0, "+", 200, 300, ".", 1, "400,", "0,"], ["chr1", 200, 300, "Name", 0, "+", 200,300, ".", 1, "100,", "0,"])
             )
-    def test_promoter(self):
-        '''promoters() should return correct promoters with known input'''
-        for ((bed), (prom)) in self.known_promoters:
-            result = bedParse.bedLine(bed).promoter()
-            self.assertEqual(result, bedParse.bedLine(prom))
-    
+ 
     def test_promoter(self):
         '''promoters() should return correct promoters with known input'''
         for ((bed), (prom)) in self.known_promoters:
