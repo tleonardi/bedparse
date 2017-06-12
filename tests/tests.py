@@ -60,8 +60,20 @@ class KnownValues(unittest.TestCase):
             (["chr1", 100, 420, "Name", 0, "+", 210, 310, ".", 4, "20,20,20,20,", "0,100,200,300,"], ["chr1", 210, 310, "Name", 0, "+", 210, 310, ".", 2, "10,10,", "0,90,"]),
             (["chr1", 100, 420, "Name", 0, "-", 210, 310, ".", 4, "20,20,20,20,", "0,100,200,300,"], ["chr1", 210, 310, "Name", 0, "-", 210, 310, ".", 2, "10,10,", "0,90,"]),
             (["chr1", 100, 500, "Name", 0, "-", 200, 300, ".", 1, "400,", "0,"], ["chr1", 200, 300, "Name", 0, "-", 200,300, ".", 1, "100,", "0,"]),
-            (["chr1", 100, 500, "Name", 0, "+", 200, 300, ".", 1, "400,", "0,"], ["chr1", 200, 300, "Name", 0, "+", 200,300, ".", 1, "100,", "0,"])
+            (["chr1", 100, 500, "Name", 0, "+", 200, 300, ".", 1, "400,", "0,"], ["chr1", 200, 300, "Name", 0, "+", 200,300, ".", 1, "100,", "0,"]),
+            (["chr1", 100, 500, "Name", 0, "+", 100, 500, ".", 1, "400,", "0,"], ["chr1", 100, 500, "Name", 0, "+", 100, 500, ".", 1, "400,", "0,"])
             )
+    
+    known_CDS_ignoreCDSonly =(
+            (["chr1", 100, 500, "Name", 0, "+", 100, 500, ".", 1, "400,", "0,"], None),
+            (["chr1", 100, 500, "Name", 0, "-", 100, 500, ".", 1, "400,", "0,"], None)
+            )
+ 
+    def test_promoter(self):
+        '''promoters() should return correct promoters with known input'''
+        for ((bed), (prom)) in self.known_promoters:
+            result = bedparse.bedLine(bed).promoter()
+            self.assertEqual(result, bedparse.bedLine(prom))
  
     def test_promoter(self):
         '''promoters() should return correct promoters with known input'''
@@ -103,6 +115,9 @@ class KnownValues(unittest.TestCase):
         for ((bed), (cds)) in self.known_CDSs:
             result = bedparse.bedLine(bed).cds()
             self.assertEqual(result, bedparse.bedLine(cds))
+        for ((bed), (cds)) in self.known_CDS_ignoreCDSonly:
+            result = bedparse.bedLine(bed).cds(ignoreCDSonly=True)
+            self.assertEqual(result, None)
 
 
 if __name__ == '__main__':

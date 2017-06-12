@@ -175,14 +175,15 @@ class bedLine(object):
         return result
 
 
-    def cds(self):
+    def cds(self, ignoreCDSonly=False):
         """Return the CDS of a coding transcript. Transcripts that are only CDS are NOT reported."""
         if(not self.stranded):
             raise BEDexception("CDS for an unstranded transcript makes little sense: "+self.name)
 
-        if(self.hasORF==0 or (self.cdsStart == self.start and self.cdsEnd == self.end)): 
+        if(self.hasORF==0): 
             return None 
-        # This block return the first UTR, i.e. the 5'UTR of + transcripts
+        if(ignoreCDSonly == True and (self.cdsStart == self.start and self.cdsEnd == self.end)):
+            return None
 
         start=self.cdsStart
         end=self.cdsEnd

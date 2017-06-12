@@ -9,7 +9,6 @@ from bedparse.bedLine import *
 # The program is killed when it receives a sigpipe
 signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 __version__ = get_distribution('bedparse').version
-
 def threeP(args):
     with args.bedfile as tsvfile:
         for line in tsvfile:
@@ -27,7 +26,7 @@ def fiveP(args):
 def cds(args):
     with args.bedfile as tsvfile:
         for line in tsvfile:
-            utr=bedLine(line.split('\t')).cds()
+            utr=bedLine(line.split('\t')).cds(ignoreCDSonly=args.ignoreCDSonly)
             if(utr): utr.print()
     tsvfile.close()
 
@@ -76,6 +75,7 @@ def main(args=None):
     parser_5pUTR.set_defaults(func=fiveP)
     
     parser_cds = subparsers.add_parser('cds', help="Prints the CDS of coding genes.")
+    parser_cds.add_argument("--ignoreCDSonly",action="store_true", help="Ignore transcripts that only consist of CDS")
     parser_cds.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the BED file.")
     parser_cds.set_defaults(func=cds)
     
