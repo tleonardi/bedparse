@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(name='bedParse',
       description='A simple library and CLI tool to manipulate BED files',
-      version="0.0.3",
+      version="0.0.4",
       url='https://github.com/tleonardi/bedParse',
       author='Tommaso Leonardi',
       author_email='tom@tleo.io',
