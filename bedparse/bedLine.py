@@ -125,31 +125,47 @@ class bedLine(object):
         # This block return the first UTR, i.e. the 5'UTR of + transcripts
         # or the 3' UTR of - transcripts
         if((self.strand=="+" and which==5) or (self.strand=="-" and which==3)):
+            if(self.start == self.cdsStart):
+                return None
             # The UTR starts and the beginning of the transcript
             start=self.start
-            # and it ends at the beginning of the CDS
-            end=self.cdsStart
             # This is the UTR end in transcripts coordinates
             relEnd=self.cdsStart-start
             exStarts=[]
             exLens=[]
             oldStarts=self.exStarts.split(",")
             oldLengths=self.exLengths.split(",")
+            nEx=0
             # Add exons one by one until we pass relEnd
             for i in range(0,self.nEx):
-                exStarts.append(oldStarts[i])
-                # If the current exons end after relEnd, stop the loop
-                if(relEnd < int(oldStarts[i])+int(oldLengths[i])):
-                    exLens.append(relEnd-int(oldStarts[i]))
-                    nEx=i+1
+                # If the UTR end occurs before or on the beginning 
+                # of the next exon, stop the loop
+                if(relEnd <= int(oldStarts[i])+int(oldLengths[i])):
+                    if(relEnd>int(oldStarts[i])): 
+                        exStarts.append(int(oldStarts[i]))
+                        exLens.append(relEnd-int(oldStarts[i]))
+                        nEx=i+1
                     break
                 else:
+                    nEx=i+1
+                    exStarts.append(int(oldStarts[i]))
                     exLens.append(int(oldLengths[i]))
+
+            # Now that we have the chain of exons we can calculate the
+            # UTR end in genomic coordinates. (It's not simply cdsStart, because
+            # cds start can be the first base of a new exon, and the CDS end
+            # would have to be the last base of the previous one)
+            if(nEx>0):
+                end=start+exStarts[nEx-1]+exLens[nEx-1]
+            else:
+                return None
+
         # This block returns the second UTR, i.e the 3'UTR of + transcripts
         # or the 5'UTR of - transcripts
         elif((self.strand=="+" and which==3) or (self.strand=="-" and which==5)):
-            # The UTR starts at the end of the CDS
-            start=self.cdsEnd
+            if(self.end==self.cdsEnd):
+                return None
+
             # and it ends at the end of the transcript
             end=self.end
             # This is the UTR start in transcript coordinates
@@ -165,10 +181,14 @@ class bedLine(object):
                 if(relStart > int(oldStarts[i])+int(oldLengths[i])):
                     nEx=nEx-1
                     next
+                elif(relStart == int(oldStarts[i])+int(oldLengths[i])):
+                    nEx=nEx-1
+                    relStart=int(oldStarts[i+1])
+                    next
                 # otherwise if the current exon starts before relStart
-                # (i.e. the current exon contain relStart), add it to the
+                # (i.e. the current exon contains relStart), add it to the
                 # list of exons starts and lengths
-                elif(int(oldStarts[i])<relStart):
+                elif(int(oldStarts[i])<=relStart):
                     exStarts.append("0")
                     exLens.append(int(oldStarts[i])+int(oldLengths[i])-relStart)
                 # otherwise (i.e. the current exon is past relStart)
@@ -176,7 +196,10 @@ class bedLine(object):
                 else:
                     exStarts.append(int(oldStarts[i])-relStart)
                     exLens.append(int(oldLengths[i]))
-
+            if(nEx>0):
+                start=end-(int(exStarts[nEx-1])+int(exLens[nEx-1]))
+            else:
+                return None
         # The list of starts and lengths has to end with a comma
         exStarts.append("")
         exLens.append("")
