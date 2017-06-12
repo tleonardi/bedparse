@@ -9,11 +9,20 @@ class BEDexception(Exception):
 class bedLine(object):
     """An object to represent a BED 12 line"""
     fields = ("chr", "start", "end", "name", "score", "strand", "cdsStart", "cdsEnd", "color", "nEx", "exLengths", "exStarts")
-    def __init__(self, line):
+    def __init__(self, line=None):
+        if(line is None):
+            return None
+        elif(type(line) is not list):
+            raise BEDexception("Can't instantiate a bedList from an object other than a list")
+
         self.bedType=len(line)
         for n in range(self.bedType):
            self.__dict__[self.fields[n]] = line[n]
       
+        # If the file format is bed3 set the name to "NoName"
+        if(self.bedType<4):
+            self.name="NoName"
+
         # Check bed type
         if(not self.bedType in (3,4,6,12)):
             raise BEDexception("Only BED3,4,6,12 are supported. "+self.name+" is neither.")
@@ -171,8 +180,11 @@ class bedLine(object):
         # The list of starts and lengths has to end with a comma
         exStarts.append("")
         exLens.append("")
-        result=bedLine([self.chr, start, end, self.name, self.score, self.strand, start, start, self.color, nEx, ','.join(str(x) for x in exLens), ','.join(str(x) for x in exStarts)])
-        return result
+        if(start!=end):
+            result=bedLine([self.chr, start, end, self.name, self.score, self.strand, start, start, self.color, nEx, ','.join(str(x) for x in exLens), ','.join(str(x) for x in exStarts)])
+            return result
+        else:
+            return None
 
 
     def cds(self, ignoreCDSonly=False):
