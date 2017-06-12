@@ -46,7 +46,8 @@ class KnownValues(unittest.TestCase):
             (["chr1", 100, 420, "Name", 0, "+", 210, 310, ".", 4, "20,20,20,20,", "0,100,200,300,"], ["chr1", 100, 210, "Name", 0, "+", 100,100, ".", 2, "20,10,", "0,100,"]),
             (["chr1", 100, 500, "Name", 0, "+", 200, 300, ".", 1, "400,", "0,"], ["chr1", 100, 200, "Name", 0, "+", 100,100, ".", 1, "100,", "0,"]),
             (["chr1", 100, 500, "Name", 0, "-", 200, 300, ".", 1, "400,", "0,"], ["chr1", 300, 500, "Name", 0, "-", 300,300, ".", 1, "200,", "0,"]),
-            (["chr1", 100, 420, "Name", 0, "-", 210, 310, ".", 4, "20,20,20,20,", "0,100,200,300,"], ["chr1", 310, 420, "Name", 0, "-", 310,310, ".", 2, "10,20,", "0,90,"])
+            (["chr1", 100, 420, "Name", 0, "-", 210, 310, ".", 4, "20,20,20,20,", "0,100,200,300,"], ["chr1", 310, 420, "Name", 0, "-", 310,310, ".", 2, "10,20,", "0,90,"]),
+            (["chr1", 100, 420, "Name", 0, "+", 100, 310, ".", 4, "20,20,20,20,", "0,100,200,300,"], None)
             )
 
     known_3pUTRs =(
@@ -54,6 +55,7 @@ class KnownValues(unittest.TestCase):
             (["chr1", 100, 500, "Name", 0, "-", 200, 300, ".", 1, "400,", "0,"], ["chr1", 100, 200, "Name", 0, "-", 100,100, ".", 1, "100,", "0,"]),
             (["chr1", 100, 500, "Name", 0, "+", 200, 300, ".", 1, "400,", "0,"], ["chr1", 300, 500, "Name", 0, "+", 300,300, ".", 1, "200,", "0,"]),
             (["chr1", 100, 420, "Name", 0, "-", 210, 310, ".", 4, "20,20,20,20,", "0,100,200,300,"], ["chr1", 100, 210, "Name", 0, "-", 100,100, ".", 2, "20,10,", "0,100,"]),
+            (["chr1", 100, 420, "Name", 0, "+", 210, 420, ".", 4, "20,20,20,20,", "0,100,200,300,"], None)
             )
     
     known_CDSs =(
@@ -102,13 +104,19 @@ class KnownValues(unittest.TestCase):
         '''fivePutr should return correct UTR for know cases'''
         for ((bed), (utr)) in self.known_5pUTRs:
             result = bedparse.bedLine(bed).utr(which=5)
-            self.assertEqual(result, bedparse.bedLine(utr))
+            if(utr is None):
+                self.assertEqual(result, None)
+            else:
+                self.assertEqual(result, bedparse.bedLine(utr))
 
     def test_3pUTRs(self):
         '''threePutr should return correct UTR for know cases'''
         for ((bed), (utr)) in self.known_3pUTRs:
             result = bedparse.bedLine(bed).utr(which=3)
-            self.assertEqual(result, bedparse.bedLine(utr))
+            if(utr is None):
+                self.assertEqual(result, None)
+            else:
+                self.assertEqual(result, bedparse.bedLine(utr))
 
     def test_CDSs(self):
         '''cds() should return correct CDSs for know cases'''
