@@ -227,7 +227,6 @@ class bedLine(object):
         oldStarts=self.exStarts.split(",")
         oldLengths=self.exLengths.split(",")
         nEx=0
-            # Loop through all exons and skip them until we reach relStart
         # This is the relative cds Start
         relStart=self.cdsStart-self.start
         relEnd=self.cdsEnd-self.start
@@ -235,7 +234,7 @@ class bedLine(object):
         for i in range(0,self.nEx):
             # If the current exons ends before the start of the CDS, skip it
             if(relStart>int(oldStarts[i])+int(oldLengths[i])):
-                next
+                continue
             # Else, if the current exon starts before the CDS
             # add it to the list
             elif(int(oldStarts[i])<relStart):
@@ -248,10 +247,9 @@ class bedLine(object):
                 exStarts.append(int(oldStarts[i])-relStart)
                 exLens.append(int(oldLengths[i]))
                 nEx=nEx+1
-
             # If the current exon ends after relEnd, stop the loop,
             # remove the last length, and add the correct one
-            if(relEnd < int(oldStarts[i])+int(oldLengths[i])):
+            if(relEnd <= int(oldStarts[i])+int(oldLengths[i])):
                 curLen=exLens.pop()
                 # The final length is the current length (i.e. without the 1st UTR in case the
                 # transcript is mono-exonic) minus the difference between the old length and the
@@ -269,3 +267,21 @@ class bedLine(object):
         result=bedLine([self.chr, start, end, self.name, self.score, self.strand, start, end, self.color, nEx, ','.join(str(x) for x in exLens), ','.join(str(x) for x in exStarts)])
         return result
 
+    def tx2genome(self, coord):
+        """ Given a position in transcript coordinates returns the equivalent in genome coordinates"""
+        exStarts=self.exStarts.split(',')
+        exLens=self.exLengths.split(',')
+        if(coord==0):
+            startGenome=self.start
+        else:
+            cumLen=0
+            i=0 
+            while cumLen < coord: 
+                cumLen+=int(exLens[i])
+                i+=1
+                if(i>=self.nEx):
+                    break
+            startEx=i-1
+            exonStartOffset=int(exLens[startEx])-(cumLen-coord)
+            startGenome=self.start+int(exStarts[startEx])+exonStartOffset
+        return startGenome
