@@ -11,9 +11,7 @@ cd bedparse
 pip install .
 ```
 
-
-##Usage
-
+## Usage
 
 ```
 usage: bedparse [-h] [--version] {3pUTR,5pUTR,cds,promoter,filter,gtf2bed} ...
@@ -43,7 +41,6 @@ optional arguments:
   -h, --help            show this help message and exit
   --version, -v         show program's version number and exit
 ```
-
 
 
 
