@@ -4,36 +4,39 @@ import argparse
 import sys
 import csv
 from pkg_resources import get_distribution
-from bedparse.bedLine import *
+from bedparse import bedline
+from bedparse import gtf2bed
 # This allows using the program in a pipe
 # The program is killed when it receives a sigpipe
 signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 __version__ = get_distribution('bedparse').version
+
+bedline([1,1,1])
 def threeP(args):
     with args.bedfile as tsvfile:
         for line in tsvfile:
-            utr=bedLine(line.split('\t')).utr(which=3)
+            utr=bedline(line.split('\t')).utr(which=3)
             if(utr): utr.print()
     tsvfile.close()
 
 def fiveP(args):
     with args.bedfile as tsvfile:
         for line in tsvfile:
-            utr=bedLine(line.split('\t')).utr(which=5)
+            utr=bedline(line.split('\t')).utr(which=5)
             if(utr): utr.print()
     tsvfile.close()
 
 def cds(args):
     with args.bedfile as tsvfile:
         for line in tsvfile:
-            utr=bedLine(line.split('\t')).cds(ignoreCDSonly=args.ignoreCDSonly)
+            utr=bedline(line.split('\t')).cds(ignoreCDSonly=args.ignoreCDSonly)
             if(utr): utr.print()
     tsvfile.close()
 
 def prom(args):
     with args.bedfile as tsvfile:
         for line in tsvfile:
-            bedLine(line.split('\t')).promoter(up=args.up, down=args.down, strand=(not args.unstranded)).print()
+            bedline(line.split('\t')).promoter(up=args.up, down=args.down, strand=(not args.unstranded)).print()
     tsvfile.close()
 
 def filter(args):
@@ -53,7 +56,6 @@ def filter(args):
                 print(line.rstrip())
     tsvfile.close()
 
-
 def main(args=None):
     if args is None:
         args = sys.argv[1:]
@@ -62,15 +64,14 @@ def main(args=None):
             description="""Perform various simple operations on BED files.""")
     
     parser.add_argument('--version', '-v', action='version', version='v'+__version__)
-    subparsers = parser.add_subparsers(help='sub-command help')
+    subparsers = parser.add_subparsers(help='sub-command help', dest='sub-command')
+    subparsers.required = True
     
-    # create the parser for the "a" command
     parser_3pUTR = subparsers.add_parser('3pUTR', help="Prints the 3' of coding genes.")
     parser_3pUTR.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the BED file.")
     parser_3pUTR.set_defaults(func=threeP)
     
-    # create the parser for the "b" command
-    parser_5pUTR = subparsers.add_parser('5pUTR', help="Prints the 3' of coding genes.")
+    parser_5pUTR = subparsers.add_parser('5pUTR', help="Prints the 5' of coding genes.")
     parser_5pUTR.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the BED file.")
     parser_5pUTR.set_defaults(func=fiveP)
     
@@ -97,6 +98,18 @@ def main(args=None):
     parser_filter.set_defaults(func=filter)
     parser_filter.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin,
     help="Path to the BED file.")
+ 
+    parser_gtf2bed = subparsers.add_parser('gtf2bed', 
+            help="""Converts a GTF file to BED12 format.
+            This tool supports the Ensembl GTF format.
+            The GTF file must contain 'transcript' and 'exon' 
+            features in field 3. If the GTF file also annotates
+            'CDS' 'start_codon' or 'stop_codon' these are used
+            to annotate the thickStart and thickEnd in the BED
+            file.""")
+    parser_gtf2bed.add_argument("gtf", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the GTF file")
+    parser_gtf2bed.add_argument("--extraFields",type=str, default='', help="Comma separated list of extra GTF fields to be added after col 12 (e.g. gene_id,gene_name).")
+    parser_gtf2bed.set_defaults(func=lambda args: gtf2bed(args.gtf, args.extraFields.split(',')))
     
     args = parser.parse_args()
     args.func(args)

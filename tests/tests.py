@@ -1,5 +1,5 @@
 import unittest
-import bedparse.bedLine as bedparse
+import bedparse
 
 class KnownValues(unittest.TestCase):
     known_promoters = ( 
@@ -69,7 +69,8 @@ class KnownValues(unittest.TestCase):
             (["chr1", 100, 420, "Name", 0, "-", 210, 310, ".", 4, "20,20,20,20,", "0,100,200,300,"], ["chr1", 210, 310, "Name", 0, "-", 210, 310, ".", 2, "10,10,", "0,90,"]),
             (["chr1", 100, 500, "Name", 0, "-", 200, 300, ".", 1, "400,", "0,"], ["chr1", 200, 300, "Name", 0, "-", 200,300, ".", 1, "100,", "0,"]),
             (["chr1", 100, 500, "Name", 0, "+", 200, 300, ".", 1, "400,", "0,"], ["chr1", 200, 300, "Name", 0, "+", 200,300, ".", 1, "100,", "0,"]),
-            (["chr1", 100, 500, "Name", 0, "+", 100, 500, ".", 1, "400,", "0,"], ["chr1", 100, 500, "Name", 0, "+", 100, 500, ".", 1, "400,", "0,"])
+            (["chr1", 100, 500, "Name", 0, "+", 100, 500, ".", 1, "400,", "0,"], ["chr1", 100, 500, "Name", 0, "+", 100, 500, ".", 1, "400,", "0,"]),
+            (["chr17", 2420184, 2511835, "ENST00000574752", 0, "-", 2464312, 2502331, ".", 10, "412,174,167,90,70,143,141,200,128,77,", "0,546,16489,17924,21305,44023,53339,57501,82019,91574,"], ["chr17", 2464312, 2502331, "ENST00000574752", 0, "-", 2464312, 2502331, ".", 4, "38,141,200,128,", "0,9211,13373,37891,"])
             )
     
     known_CDS_ignoreCDSonly =(
@@ -80,57 +81,57 @@ class KnownValues(unittest.TestCase):
     def test_promoter(self):
         '''promoters() should return correct promoters with known input'''
         for ((bed), (prom)) in self.known_promoters:
-            result = bedparse.bedLine(bed).promoter()
-            self.assertEqual(result, bedparse.bedLine(prom))
+            result = bedparse.bedline(bed).promoter()
+            self.assertEqual(result, bedparse.bedline(prom))
  
     def test_promoter(self):
         '''promoters() should return correct promoters with known input'''
         for ((bed), (prom)) in self.known_promoters:
-            result = bedparse.bedLine(bed).promoter()
-            self.assertEqual(result, bedparse.bedLine(prom))
+            result = bedparse.bedline(bed).promoter()
+            self.assertEqual(result, bedparse.bedline(prom))
 
     def test_promoter100(self):
         '''promoters() should return correct promoters100 with known input'''
         for ((bed), (prom)) in self.known_promoters100:
-            result = bedparse.bedLine(bed).promoter(up=100, down=100)
-            self.assertEqual(result, bedparse.bedLine(prom))
+            result = bedparse.bedline(bed).promoter(up=100, down=100)
+            self.assertEqual(result, bedparse.bedline(prom))
 
     def test_promoterUnstranded(self):
         '''promoters() should return correct promotersUnstranded with known input'''
         for ((bed), (prom)) in self.known_promotersUnstranded:
-            result = bedparse.bedLine(bed).promoter(strand=0)
-            self.assertEqual(result, bedparse.bedLine(prom))
+            result = bedparse.bedline(bed).promoter(strand=0)
+            self.assertEqual(result, bedparse.bedline(prom))
 
     def test_badBed(self):
         '''Bad BED lines should throw and exception'''
         for bed in self.badBed:
-            self.assertRaises(bedparse.BEDexception, bedparse.bedLine, bed)
+            self.assertRaises(bedparse.BEDexception, bedparse.bedline, bed)
 
     def test_5pUTRs(self):
         '''fivePutr should return correct UTR for know cases'''
         for ((bed), (utr)) in self.known_5pUTRs:
-            result = bedparse.bedLine(bed).utr(which=5)
+            result = bedparse.bedline(bed).utr(which=5)
             if(utr is None):
                 self.assertEqual(result, None)
             else:
-                self.assertEqual(result, bedparse.bedLine(utr))
+                self.assertEqual(result, bedparse.bedline(utr))
 
     def test_3pUTRs(self):
         '''threePutr should return correct UTR for know cases'''
         for ((bed), (utr)) in self.known_3pUTRs:
-            result = bedparse.bedLine(bed).utr(which=3)
+            result = bedparse.bedline(bed).utr(which=3)
             if(utr is None):
                 self.assertEqual(result, None)
             else:
-                self.assertEqual(result, bedparse.bedLine(utr))
+                self.assertEqual(result, bedparse.bedline(utr))
 
     def test_CDSs(self):
         '''cds() should return correct CDSs for know cases'''
         for ((bed), (cds)) in self.known_CDSs:
-            result = bedparse.bedLine(bed).cds()
-            self.assertEqual(result, bedparse.bedLine(cds))
+            result = bedparse.bedline(bed).cds()
+            self.assertEqual(result, bedparse.bedline(cds))
         for ((bed), (cds)) in self.known_CDS_ignoreCDSonly:
-            result = bedparse.bedLine(bed).cds(ignoreCDSonly=True)
+            result = bedparse.bedline(bed).cds(ignoreCDSonly=True)
             self.assertEqual(result, None)
 
 

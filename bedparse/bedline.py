@@ -1,19 +1,14 @@
 import re
+from bedparse import BEDexception
 
-class BEDexception(Exception):
-    pass
-
-
-
-
-class bedLine(object):
+class bedline(object):
     """An object to represent a BED 12 line"""
     fields = ("chr", "start", "end", "name", "score", "strand", "cdsStart", "cdsEnd", "color", "nEx", "exLengths", "exStarts")
     def __init__(self, line=None):
         if(line is None):
             return None
         elif(type(line) is not list):
-            raise BEDexception("Can't instantiate a bedList from an object other than a list")
+            raise BEDexception("Can't instantiate a bedline from an object other than a list")
 
         self.bedType=len(line)
         for n in range(self.bedType):
@@ -102,7 +97,7 @@ class bedLine(object):
         return self.__dict__ == other.__dict__
 
     def promoter(self, up=500, down=500, strand=1):
-        """ Returns a bedLine of the promoters"""
+        """ Returns a bedline of the promoters"""
         if(not strand or self.strand=="+"):
             start = self.start-up if self.start-up>0 else 0
             end = self.start+down
@@ -111,7 +106,7 @@ class bedLine(object):
             end=self.end+up
         else:
             raise BEDexception("Strand not recognised for transcript "+self.name)
-        return bedLine([self.chr, start, end, self.name])
+        return bedline([self.chr, start, end, self.name])
 
     def utr(self, which=None):
         """ Returns the 5p UTR of coding transcripts (i.e. those with a CDS) """
@@ -204,7 +199,7 @@ class bedLine(object):
         exStarts.append("")
         exLens.append("")
         if(start!=end):
-            result=bedLine([self.chr, start, end, self.name, self.score, self.strand, start, start, self.color, nEx, ','.join(str(x) for x in exLens), ','.join(str(x) for x in exStarts)])
+            result=bedline([self.chr, start, end, self.name, self.score, self.strand, start, start, self.color, nEx, ','.join(str(x) for x in exLens), ','.join(str(x) for x in exStarts)])
             return result
         else:
             return None
@@ -264,7 +259,7 @@ class bedLine(object):
         # The list of starts and lengths has to end with a comma
         exStarts.append("")
         exLens.append("")
-        result=bedLine([self.chr, start, end, self.name, self.score, self.strand, start, end, self.color, nEx, ','.join(str(x) for x in exLens), ','.join(str(x) for x in exStarts)])
+        result=bedline([self.chr, start, end, self.name, self.score, self.strand, start, end, self.color, nEx, ','.join(str(x) for x in exLens), ','.join(str(x) for x in exStarts)])
         return result
 
     def tx2genome(self, coord):
