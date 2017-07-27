@@ -271,17 +271,19 @@ class bedLine(object):
         """ Given a position in transcript coordinates returns the equivalent in genome coordinates"""
         exStarts=self.exStarts.split(',')
         exLens=self.exLengths.split(',')
-        if(coord==0):
+        if(coord<=0):
             startGenome=self.start
         else:
             cumLen=0
             i=0 
+            #print("CumLen: %s Coord: %s" %(cumLen, coord))
             while cumLen < coord: 
                 cumLen+=int(exLens[i])
                 i+=1
                 if(i>=self.nEx):
                     break
             startEx=i-1
+            #print("startEx=",startEx)
             exonStartOffset=int(exLens[startEx])-(cumLen-coord)
             startGenome=self.start+int(exStarts[startEx])+exonStartOffset
         return startGenome
