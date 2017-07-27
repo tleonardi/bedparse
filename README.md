@@ -4,13 +4,16 @@ Bedparse is a simple python module and CLI tool to perform common operations on 
 *This program is under active development and is likely to contain bugs.*
 
 ## Installation
+
 ```
 git clone git@github.com:tleonardi/bedparse.git
 cd bedparse
 pip install .
 ```
 
+
 ##Usage
+
 ```
 usage: bedparse [-h] [--version] {3pUTR,5pUTR,cds,promoter,filter,gtf2bed} ...
 
