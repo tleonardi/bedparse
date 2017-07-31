@@ -14,17 +14,20 @@ pip install .
 ## Usage
 
 ```
-usage: bedparse [-h] [--version] {3pUTR,5pUTR,cds,promoter,filter,gtf2bed} ...
+usage: bedparse [-h] [--version]
+                {3pUTR,5pUTR,cds,promoter,introns,filter,gtf2bed} ...
 
 Perform various simple operations on BED files.
 
 positional arguments:
-  {3pUTR,5pUTR,cds,promoter,filter,gtf2bed}
+  {3pUTR,5pUTR,cds,promoter,introns,filter,gtf2bed}
                         sub-command help
     3pUTR               Prints the 3' of coding genes.
     5pUTR               Prints the 5' of coding genes.
     cds                 Prints the CDS of coding genes.
     promoter            Prints the promoters of coding genes.
+    introns             Prints BED records corresponding to the introns of
+                        each transcript in the original file.
     filter              Filters a BED file based on an annotation. BED entries
                         with a name (i.e. col4) that appears in the specified
                         column of the annotation are printed to stdout. For
@@ -41,6 +44,3 @@ optional arguments:
   -h, --help            show this help message and exit
   --version, -v         show program's version number and exit
 ```
-
-
-
