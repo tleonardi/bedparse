@@ -8,7 +8,14 @@ Bedparse is a simple python module and CLI tool to perform common operations on 
 ```
 git clone git@github.com:tleonardi/bedparse.git
 cd bedparse
+```
+and then:
+```
 pip install .
+```
+or if you don't have system-wide write permissions:
+```
+pip install . --user
 ```
 
 ## Usage
