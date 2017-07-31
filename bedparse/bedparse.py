@@ -12,6 +12,14 @@ signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 __version__ = get_distribution('bedparse').version
 
 bedline([1,1,1])
+
+def introns(args):
+    with args.bedfile as tsvfile:
+        for line in tsvfile:
+            introns=bedline(line.split('\t')).introns()
+            if(introns): introns.print()
+    tsvfile.close()
+
 def threeP(args):
     with args.bedfile as tsvfile:
         for line in tsvfile:
@@ -86,6 +94,10 @@ def main(args=None):
     parser_prom.add_argument("--unstranded",action="store_true", help="Do not consider strands.")
     parser_prom.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the BED file.")
     parser_prom.set_defaults(func=prom)
+    
+    parser_introns = subparsers.add_parser('introns', help="Prints BED records corresponding to the introns of each transcript in the original file.")
+    parser_introns.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the BED file.")
+    parser_introns.set_defaults(func=introns)
     
     parser_filter = subparsers.add_parser('filter', 
             help="""Filters a BED file based on an annotation.

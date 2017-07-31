@@ -262,6 +262,27 @@ class bedline(object):
         result=bedline([self.chr, start, end, self.name, self.score, self.strand, start, end, self.color, nEx, ','.join(str(x) for x in exLens), ','.join(str(x) for x in exStarts)])
         return result
 
+    def introns(self):
+        """ Returns the introns of a transcript """
+        if(self.bedType<12 or self.nEx<2): return None
+
+        exStarts=self.exStarts.split(',')
+        exLens=self.exLengths.split(',')
+        intronStarts=list()
+        intronLens=list()
+        for n in range(0,self.nEx-1):
+            intronStarts.append(int(exStarts[n])+int(exLens[n]))
+            intronLens.append(int(exStarts[n+1])-int(intronStarts[n]))
+        # Subtract the size of the first exon to the new starts
+        intronStarts = [x-int(exLens[0]) for x in intronStarts]
+
+        intronStarts.append("")
+        intronLens.append("")
+        result = [self.chr, self.start+int(exLens[0]), self.end-int(exLens[-2]), self.name, self.score, self.strand, self.start+int(exLens[0]), self.start+int(exLens[0]), self.color, len(intronStarts)-1, ','.join(str(x) for x in intronLens), ','.join(str(x) for x in intronStarts)]
+        return(bedline(result))
+
+
+
     def tx2genome(self, coord):
         """ Given a position in transcript coordinates returns the equivalent in genome coordinates"""
         exStarts=self.exStarts.split(',')
