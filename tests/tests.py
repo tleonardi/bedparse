@@ -85,6 +85,23 @@ class KnownValues(unittest.TestCase):
             (["chr1", 100, 500, "Name", 0, "-", 100, 500, ".", 1, "400,", "0,"], None)
             )
 
+    known_bed12tobed6=(
+            ['chr1', 14403, 29570, 'ENST00000488147.1', '0', '-', 29570, 29570, 0,11,'98,34,152,159,198,136,137,147,99,154,37,', '0,601,1392,2203,2454,2829,3202,3511,3864,10334,15130,'],
+             [
+                 ['chr1', 14403, 14501, 'ENST00000488147.1_Exon001', '0', '-'],
+                 ['chr1', 15004, 15038, 'ENST00000488147.1_Exon002', '0', '-'],
+                 ['chr1', 15795, 15947, 'ENST00000488147.1_Exon003', '0', '-'],
+                 ['chr1', 16606, 16765, 'ENST00000488147.1_Exon004', '0', '-'],
+                 ['chr1', 16857, 17055, 'ENST00000488147.1_Exon005', '0', '-'],
+                 ['chr1', 17232, 17368, 'ENST00000488147.1_Exon006', '0', '-'],
+                 ['chr1', 17605, 17742, 'ENST00000488147.1_Exon007', '0', '-'],
+                 ['chr1', 17914, 18061, 'ENST00000488147.1_Exon008', '0', '-'],
+                 ['chr1', 18267, 18366, 'ENST00000488147.1_Exon009', '0', '-'],
+                 ['chr1', 24737, 24891, 'ENST00000488147.1_Exon010', '0', '-'],
+                 ['chr1', 29533, 29570, 'ENST00000488147.1_Exon011', '0', '-']
+            ])
+
+
     def test_promoter100(self):
         '''promoters() should return correct promoters100 with known input'''
         for ((bed), (prom)) in self.known_promoters100:
@@ -137,6 +154,15 @@ class KnownValues(unittest.TestCase):
         for ((bed), (cds)) in self.known_CDS_ignoreCDSonly:
             result = bedparse.bedline(bed).cds(ignoreCDSonly=True)
             self.assertEqual(result, None)
+
+    def test_bed12tobed6(self):
+        '''bed12tobed6() should return correct BED6 records for know cases'''
+        bed, res = self.known_bed12tobed6
+        resBedline = []
+        for i in res:
+            resBedline.append(bedparse.bedline(i))
+        result = bedparse.bedline(bed).bed12tobed6(appendExN=True)
+        self.assertEqual(result,resBedline)
 
 
 if __name__ == '__main__':

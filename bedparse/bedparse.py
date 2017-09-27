@@ -3,6 +3,7 @@ import signal
 import argparse
 import sys
 import csv
+import re
 from pkg_resources import get_distribution
 from bedparse import bedline
 from bedparse import gtf2bed
@@ -10,8 +11,6 @@ from bedparse import gtf2bed
 # The program is killed when it receives a sigpipe
 signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 __version__ = get_distribution('bedparse').version
-
-bedline([1,1,1])
 
 def introns(args):
     with args.bedfile as tsvfile:
@@ -45,6 +44,18 @@ def prom(args):
     with args.bedfile as tsvfile:
         for line in tsvfile:
             bedline(line.split('\t')).promoter(up=args.up, down=args.down, strand=(not args.unstranded)).print()
+    tsvfile.close()
+
+def bed12tobed6(args):
+    with args.bedfile as tsvfile:
+        for line in tsvfile:
+            for el in bedline(line.split('\t')).bed12tobed6(appendExN=args.appendExN):
+                el.print()
+            if(args.keepIntrons):
+                nameSub=re.compile("_Exon([0-9]+)")
+                for el in bedline(line.split('\t')).introns().bed12tobed6(appendExN=args.appendExN):
+                    el.name=nameSub.sub(r"_Intron\1", el.name)
+                    el.print()
     tsvfile.close()
 
 def filter(args):
@@ -84,7 +95,7 @@ def main(args=None):
     parser_5pUTR.set_defaults(func=fiveP)
     
     parser_cds = subparsers.add_parser('cds', help="Prints the CDS of coding genes.")
-    parser_cds.add_argument("--ignoreCDSonly",action="store_true", help="Ignore transcripts that only consist of CDS")
+    parser_cds.add_argument("--ignoreCDSonly",action="store_true", help="Ignore transcripts that only consist of CDS.")
     parser_cds.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the BED file.")
     parser_cds.set_defaults(func=cds)
     
@@ -105,8 +116,8 @@ def main(args=None):
             in the specified column of the annotation are
             printed to stdout. For efficiency reasons this
             command doesn't perform BED validation.""")
-    parser_filter.add_argument("--annotation", "-a", type=str, help="Path to the annotation file", required=True)
-    parser_filter.add_argument("--column","-c",type=int, default=1, help="Column of the annotation file (1-based, default=1)")
+    parser_filter.add_argument("--annotation", "-a", type=str, help="Path to the annotation file.", required=True)
+    parser_filter.add_argument("--column","-c",type=int, default=1, help="Column of the annotation file (1-based, default=1).")
     parser_filter.set_defaults(func=filter)
     parser_filter.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin,
     help="Path to the BED file.")
@@ -119,9 +130,17 @@ def main(args=None):
             'CDS' 'start_codon' or 'stop_codon' these are used
             to annotate the thickStart and thickEnd in the BED
             file.""")
-    parser_gtf2bed.add_argument("gtf", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the GTF file")
+    parser_gtf2bed.add_argument("gtf", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the GTF file.")
     parser_gtf2bed.add_argument("--extraFields",type=str, default='', help="Comma separated list of extra GTF fields to be added after col 12 (e.g. gene_id,gene_name).")
     parser_gtf2bed.set_defaults(func=lambda args: gtf2bed(args.gtf, args.extraFields.split(',')))
+ 
+    parser_bed12tobed6 = subparsers.add_parser('bed12tobed6', 
+            help="""Converts a BED12 file to BED6 format.
+            """)
+    parser_bed12tobed6.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the GTF file.")
+    parser_bed12tobed6.add_argument("--appendExN", action="store_true", help="Appends the exon number to the transcript name.")
+    parser_bed12tobed6.add_argument("--keepIntrons", action="store_true", help="Add records for introns as well.")
+    parser_bed12tobed6.set_defaults(func=bed12tobed6)
     
     args = parser.parse_args()
     args.func(args)
