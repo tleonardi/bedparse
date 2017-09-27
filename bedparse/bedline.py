@@ -93,6 +93,14 @@ class bedline(object):
             out.append(self.__dict__[key])
         return print(*out, sep="\t")
 
+    def pprint(self):
+        import pprint
+        pp = pprint.PrettyPrinter(indent=4)
+        out=[]
+        for key in self.fields[:self.bedType]:
+            out.append(self.__dict__[key])
+        return pp.pprint(out)
+
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
@@ -303,3 +311,16 @@ class bedline(object):
             exonStartOffset=int(exLens[startEx])-(cumLen-coord)
             startGenome=self.start+int(exStarts[startEx])+exonStartOffset
         return startGenome
+
+
+    def bed12tobed6(self, appendExN=False):
+        """ Returns a list of bedlines (bed6) corresponding to the exons."""
+        if(self.bedType!=12): raise BEDexception("Only BED12 lines can be coverted to BED6")
+        exons=list()
+        lengths=[int(x) for x in self.exLengths.split(",")[:-1]]
+        starts=[int(x) for x in self.exStarts.split(",")[:-1]]
+        for n in range(0,self.nEx):
+            name=self.name
+            if(appendExN == True): name+="_Exon"+'%03d'%(n+1)
+            exons.append(bedline([self.chr, self.start+starts[n],  self.start+starts[n]+lengths[n], name, self.score, self.strand]))
+        return(exons)
