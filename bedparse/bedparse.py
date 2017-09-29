@@ -132,7 +132,8 @@ def main(args=None):
             file.""")
     parser_gtf2bed.add_argument("gtf", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the GTF file.")
     parser_gtf2bed.add_argument("--extraFields",type=str, default='', help="Comma separated list of extra GTF fields to be added after col 12 (e.g. gene_id,gene_name).")
-    parser_gtf2bed.set_defaults(func=lambda args: gtf2bed(args.gtf, args.extraFields.split(',')))
+    parser_gtf2bed.add_argument("--filterType",type=str, default='', help="Comma separated list of 'transcript_type' types to retain.")
+    parser_gtf2bed.set_defaults(func=lambda args: gtf2bed(args.gtf, args.extraFields.split(','), args.filterType.split(',')))
  
     parser_bed12tobed6 = subparsers.add_parser('bed12tobed6', 
             help="""Converts a BED12 file to BED6 format.
