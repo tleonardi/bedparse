@@ -87,11 +87,11 @@ class bedline(object):
             out.append(self.__dict__[key])
         return str(out)
 
-    def print(self):
+    def print(self, end='\n'):
         out=[]
         for key in self.fields[:self.bedType]:
             out.append(self.__dict__[key])
-        return print(*out, sep="\t")
+        return print(*out, sep="\t", end=end)
 
     def pprint(self):
         import pprint

@@ -75,6 +75,33 @@ def filter(args):
                 print(line.rstrip())
     tsvfile.close()
 
+def join(args):
+    col=args.column-1
+    annot=dict()
+    try:
+        annotation=open(args.annotation)
+    except:
+        raise BEDexception("Annotation file not valid")
+    annotationReader = csv.reader(annotation, delimiter=args.separator)
+    for line in annotationReader:
+        annot.setdefault(line[col], []).append(line[0:col]+line[col+1:])
+    annotation.close()
+    with args.bedfile as tsvfile:
+        for line in tsvfile:
+            line=line.split('\t')
+            if(args.noUnmatched==False or line[3] in annot.keys()):
+                record=bedline(line)
+                if(record):
+                        nrec=len(annot.setdefault(record.name, []))
+                        if(nrec==0):
+                            record.print(end='')
+                            print('',args.empty,sep="\t")
+                        else:
+                            for i in range(0,nrec):
+                                record.print(end='')
+                                print('',*annot[record.name][i], sep='\t')
+    tsvfile.close()
+
 def main(args=None):
     if args is None:
         args = sys.argv[1:]
@@ -121,6 +148,19 @@ def main(args=None):
     parser_filter.set_defaults(func=filter)
     parser_filter.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin,
     help="Path to the BED file.")
+    
+    parser_join = subparsers.add_parser('join', 
+            help="""Joins a BED file with an annotation file using
+            the BED name (col4) as the joining key.""")
+    parser_join.add_argument("--annotation", "-a", type=str, help="Path to the annotation file.", required=True)
+    parser_join.add_argument("--column","-c",type=int, default=1, help="Column of the annotation file (1-based, default=1).")
+    parser_join.add_argument("--separator","-s",type=str, default='\t', help="Field separator for the annotation file (default tab)")
+    parser_join.add_argument("--empty","-e",type=str, default='.', help="String to append to empty records (default '.').")
+    parser_join.add_argument("--noUnmatched", "-n" ,action="store_true", help="Do not print unmatched lines.")
+    parser_join.set_defaults(func=join)
+    parser_join.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin,
+    help="Path to the BED file.")
+ 
  
     parser_gtf2bed = subparsers.add_parser('gtf2bed', 
             help="""Converts a GTF file to BED12 format.
