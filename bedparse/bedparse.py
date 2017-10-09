@@ -7,6 +7,7 @@ import re
 from pkg_resources import get_distribution
 from bedparse import bedline
 from bedparse import gtf2bed
+from bedparse import BEDexception
 # This allows using the program in a pipe
 # The program is killed when it receives a sigpipe
 signal.signal(signal.SIGPIPE, signal.SIG_DFL)
@@ -84,6 +85,8 @@ def join(args):
         raise BEDexception("Annotation file not valid")
     annotationReader = csv.reader(annotation, delimiter=args.separator)
     for line in annotationReader:
+        if(len(line)<=col):
+            raise BEDexception("Some lines don't contain the annotation column")
         annot.setdefault(line[col], []).append(line[0:col]+line[col+1:])
     annotation.close()
     with args.bedfile as tsvfile:
@@ -94,8 +97,11 @@ def join(args):
                 if(record):
                         nrec=len(annot.setdefault(record.name, []))
                         if(nrec==0):
-                            record.print(end='')
-                            print('',args.empty,sep="\t")
+                            if(args.empty==''):
+                                record.print()
+                            else:
+                                record.print(end='')
+                                print('',args.empty,sep="\t")
                         else:
                             for i in range(0,nrec):
                                 record.print(end='')
