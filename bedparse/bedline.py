@@ -10,6 +10,11 @@ class bedline(object):
         elif(type(line) is not list):
             raise BEDexception("Can't instantiate a bedline from an object other than a list")
 
+
+        # Remove trailing new line
+        if(isinstance(line[len(line)-1], str)):
+           line[len(line)-1] = line[len(line)-1].rstrip()
+
         self.bedType=len(line)
         for n in range(self.bedType):
            self.__dict__[self.fields[n]] = line[n]
@@ -71,9 +76,6 @@ class bedline(object):
                 try: int(ex)
                 except ValueError:
                     raise BEDexception("Exon lengths are not int for transcript "+self.name)
-
-            # Remove trailing new line
-            self.exStarts=self.exStarts.rstrip()
 
             # If cds start and end are the same set hasORF to 0
             if(self.cdsStart==self.cdsEnd):
