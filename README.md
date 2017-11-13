@@ -18,12 +18,14 @@ pip3 install .
 
 ```
 usage: bedparse [-h] [--version]
-                {3pUTR,5pUTR,cds,promoter,introns,filter,join,gtf2bed,bed12tobed6}
+                
+                {filter,5pUTR,cds,3pUTR,promoter,join,introns,gtf2bed,bed12tobed6}
+                ...
 
 Perform various simple operations on BED files.
 
 positional arguments:
-  {3pUTR,5pUTR,cds,promoter,introns,filter,join,gtf2bed,bed12tobed6}
+  {filter,5pUTR,cds,3pUTR,promoter,join,introns,gtf2bed,bed12tobed6}
                         sub-command help
     3pUTR               Prints the 3' of coding genes.
     5pUTR               Prints the 5' of coding genes.
@@ -49,4 +51,5 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   --version, -v         show program's version number and exit
+
 ```
