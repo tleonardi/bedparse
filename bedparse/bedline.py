@@ -1,5 +1,6 @@
 import re
 from bedparse import BEDexception
+from bedparse import chrnames
 
 class bedline(object):
     """An object to represent a BED 12 line"""
@@ -326,3 +327,31 @@ class bedline(object):
             if(appendExN == True): name+="_Exon"+'%03d'%(n+1)
             exons.append(bedline([self.chr, self.start+starts[n],  self.start+starts[n]+lengths[n], name, self.score, self.strand]))
         return(exons)
+
+    def translateChr(self, assembly, target):
+        """ Convert the chromosome name to Ensembl or UCSC """
+
+        if(assembly not in ("hg38", "mm10")):
+            raise BEDexception("The specified assembly is not supported")
+        if(target not in ("ucsc", "ens")):
+            raise BEDexception("The specified target naming convention is not supported")
+
+        if(assembly=="hg38" and target=="ucsc"):
+            try:
+                self.chr=chrnames.hg38_ensembl2ucsc[self.chr]
+            except:
+                raise BEDexception("The chromosome of transcript "+self.name+" ("+self.chr+") doesn't match any known UCSC chromosome")
+
+        if(assembly=="hg38" and target=="ens"):
+            try:
+                self.chr=chrnames.hg38_ucsc2ensembl[self.chr]
+            except:
+                raise BEDexception("The chromosome of transcript "+self.name+" ("+self.chr+") doesn't match any known Ensembl chromosome")
+
+        if(assembly=="mm10" and target=="ucsc"):
+            try:
+                self.chr=chrnames.mm10_ensembl2ucsc[self.chr]
+            except:
+                raise BEDexception("The chromosome of transcript "+self.name+" ("+self.chr+") doesn't match any known UCSC chromosome")
+
+        return(self)

@@ -108,6 +108,12 @@ def join(args):
                                 print('',*annot[record.name][i], sep='\t')
     tsvfile.close()
 
+def convertChr(args):
+    with args.bedfile as tsvfile:
+        for line in tsvfile:
+            bedline(line.split('\t')).translateChr(assembly=args.assembly, target=args.target).print()
+    tsvfile.close()
+
 def main(args=None):
     if args is None:
         args = sys.argv[1:]
@@ -189,6 +195,13 @@ def main(args=None):
     parser_bed12tobed6.add_argument("--keepIntrons", action="store_true", help="Add records for introns as well.")
     parser_bed12tobed6.set_defaults(func=bed12tobed6)
     
+    parser_convertChr = subparsers.add_parser('convertChr', help="Convert chromsomes names between UCSC and Ensembl formats.")
+    parser_convertChr.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the BED file.")
+    parser_convertChr.add_argument("--assembly", "-a", type=str, help="Assembly of the BED file (either hg38 or mm10).", required=True)
+    parser_convertChr.add_argument("--target", "-t", type=str, help="Desidered chromosome name convention (ucsc or ens).", required=True)
+    parser_convertChr.set_defaults(func=convertChr)
+    
+ 
     args = parser.parse_args()
     args.func(args)
 
