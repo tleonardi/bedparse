@@ -12,7 +12,8 @@ class bedline(object):
 
 
         # Remove trailing new line
-        line[len(line)-1] = line[len(line)-1].rstrip()
+        if(isinstance(line[len(line)-1], str)):
+           line[len(line)-1] = line[len(line)-1].rstrip()
 
         self.bedType=len(line)
         for n in range(self.bedType):
