@@ -342,7 +342,7 @@ class bedline(object):
             convDict=chrnames.hg38_ensembl2ucsc
             if(patches): convDict.update(chrnames.hg38_ensembl2ucsc_patches)
 
-        elif(assembly=="hg38" and target=="end"):
+        elif(assembly=="hg38" and target=="ens"):
             convDict=chrnames.hg38_ucsc2ensembl
             if(patches): convDict.update(chrnames.hg38_ucsc2ensembl_patches)
 

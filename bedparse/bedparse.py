@@ -203,7 +203,7 @@ def main(args=None):
                                                    description="""Convert chromosome names between UCSC and Ensembl formats.
                                                                   The conversion supports the hg38 assembly up to patch 11 and
                                                                   the mm10 assembly up to patch 4. By default patches
-                                                                  are not converted (becasue the UCSC genome browser does not
+                                                                  are not converted (because the UCSC genome browser does not
                                                                   support them), but can be enabled using the -p flag.
                                                                   When the BED file contains a chromsome that is not recognised,
                                                                   by default the program stops and throws an error. Alternatively,
