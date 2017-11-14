@@ -328,30 +328,40 @@ class bedline(object):
             exons.append(bedline([self.chr, self.start+starts[n],  self.start+starts[n]+lengths[n], name, self.score, self.strand]))
         return(exons)
 
-    def translateChr(self, assembly, target):
+    def translateChr(self, assembly, target, suppress=False, all=False, patches=False):
         """ Convert the chromosome name to Ensembl or UCSC """
 
         if(assembly not in ("hg38", "mm10")):
             raise BEDexception("The specified assembly is not supported")
         if(target not in ("ucsc", "ens")):
             raise BEDexception("The specified target naming convention is not supported")
+        if(all and suppress):
+            raise BEDexception("Only one of allowMissing and suppressMissing is allowed")
 
         if(assembly=="hg38" and target=="ucsc"):
-            try:
-                self.chr=chrnames.hg38_ensembl2ucsc[self.chr]
-            except:
-                raise BEDexception("The chromosome of transcript "+self.name+" ("+self.chr+") doesn't match any known UCSC chromosome")
+            convDict=chrnames.hg38_ensembl2ucsc
+            if(patches): convDict.update(chrnames.hg38_ensembl2ucsc_patches)
 
-        if(assembly=="hg38" and target=="ens"):
-            try:
-                self.chr=chrnames.hg38_ucsc2ensembl[self.chr]
-            except:
-                raise BEDexception("The chromosome of transcript "+self.name+" ("+self.chr+") doesn't match any known Ensembl chromosome")
+        elif(assembly=="hg38" and target=="end"):
+            convDict=chrnames.hg38_ucsc2ensembl
+            if(patches): convDict.update(chrnames.hg38_ucsc2ensembl_patches)
 
-        if(assembly=="mm10" and target=="ucsc"):
-            try:
-                self.chr=chrnames.mm10_ensembl2ucsc[self.chr]
-            except:
-                raise BEDexception("The chromosome of transcript "+self.name+" ("+self.chr+") doesn't match any known UCSC chromosome")
+        elif(assembly=="mm10" and target=="ucsc"):
+            convDict=chrnames.mm10_ensembl2ucsc
+            if(patches): convDict.update(chrnames.mm10_ensembl2ucsc_patches)
+
+        elif(assembly=="mm10" and target=="ens"):
+            convDict=chrnames.mm10_ucsc2ensembl
+            if(patches): convDict.update(chrnames.mm10_ucsc2ensembl_patches)
+
+        
+        if(self.chr in convDict.keys()):
+                self.chr=convDict[self.chr]
+        elif(all):
+            self.chr="NA"
+        elif(suppress):
+            return None
+        else:
+            raise BEDexception("The chromosome of transcript "+self.name+" ("+self.chr+") can't be found in the DB.")
 
         return(self)
