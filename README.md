@@ -18,14 +18,13 @@ pip3 install .
 
 ```
 usage: bedparse [-h] [--version]
-                
-                {filter,5pUTR,cds,3pUTR,promoter,join,introns,gtf2bed,bed12tobed6}
+                {3pUTR,5pUTR,cds,promoter,introns,filter,join,gtf2bed,bed12tobed6,convertChr}
                 ...
 
 Perform various simple operations on BED files.
 
 positional arguments:
-  {filter,5pUTR,cds,3pUTR,promoter,join,introns,gtf2bed,bed12tobed6}
+  {3pUTR,5pUTR,cds,promoter,introns,filter,join,gtf2bed,bed12tobed6,convertChr}
                         sub-command help
     3pUTR               Prints the 3' of coding genes.
     5pUTR               Prints the 5' of coding genes.
@@ -33,20 +32,13 @@ positional arguments:
     promoter            Prints the promoters of coding genes.
     introns             Prints BED records corresponding to the introns of
                         each transcript in the original file.
-    filter              Filters a BED file based on an annotation. BED entries
-                        with a name (i.e. col4) that appears in the specified
-                        column of the annotation are printed to stdout. For
-                        efficiency reasons this command doesn't perform BED
-                        validation.
+    filter              Filters a BED file based on an annotation.
     join                Joins a BED file with an annotation file using the BED
                         name (col4) as the joining key.
-    gtf2bed             Converts a GTF file to BED12 format. This tool
-                        supports the Ensembl GTF format. The GTF file must
-                        contain 'transcript' and 'exon' features in field 3.
-                        If the GTF file also annotates 'CDS' 'start_codon' or
-                        'stop_codon' these are used to annotate the thickStart
-                        and thickEnd in the BED file.
+    gtf2bed             Converts a GTF file to BED12 format.
     bed12tobed6         Converts a BED12 file to BED6 format.
+    convertChr          Convert chromosome names between UCSC and Ensembl
+                        formats
 
 optional arguments:
   -h, --help            show this help message and exit
