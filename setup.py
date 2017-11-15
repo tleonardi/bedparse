@@ -11,10 +11,12 @@ setup(name='bedparse',
           'Development Status :: 3 - Alpha',
            'License :: OSI Approved :: MIT License',
           'Programming Language :: Python :: 3',
+          'Programming Language :: Python :: 3.1',
           'Programming Language :: Python :: 3.2',
           'Programming Language :: Python :: 3.3',
           'Programming Language :: Python :: 3.4',
           'Programming Language :: Python :: 3.5'
+          'Programming Language :: Python :: 3.6'
       ],
       packages=['bedparse'],
       install_requires=['argparse', 'setuptools'],
