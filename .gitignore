@@ -9,3 +9,6 @@ __pycache__/
 /*.egg-info
 
 /tests/test_data.tgz
+/virtualenv/
+/build/
+
