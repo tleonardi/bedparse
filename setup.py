@@ -2,14 +2,14 @@ from setuptools import setup
 
 setup(name='bedparse',
       description='A simple library and CLI tool to manipulate BED files',
-      version="0.0.13",
+      version="0.1.0b1",
       url='https://github.com/tleonardi/bedparse',
       author='Tommaso Leonardi',
       author_email='tom@tleo.io',
       license='MIT',
       classifiers=[
-          'Development Status :: 3 - Alpha',
-           'License :: OSI Approved :: MIT License',
+          'Development Status :: 4 - Beta',
+          'License :: OSI Approved :: MIT License',
           'Programming Language :: Python :: 3.2',
           'Programming Language :: Python :: 3.3',
           'Programming Language :: Python :: 3.4',
