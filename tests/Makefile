@@ -1,4 +1,7 @@
 SHELL:=/bin/bash
+
+# Extended funcionality tests for bedparse
+#
 # In order to run these tests the following files are needed:
 # ensembl.bed (e.g. from ucsc)
 # ensembl_5putr: (e.g. from ucsc)
@@ -6,11 +9,15 @@ SHELL:=/bin/bash
 # ensembl_introns: (e.g. from ucsc)
 # gencode.gtf: from the gencode website
 # gencode.bed: converted from the gtf with gtfToGenePred and genePredToBed
+# This Makefile automatically downloads the file above as 'test_data.tgz'
+#
+
 all: fivep threep introns gtf2bed operations
 
 .PHONY: data
-data:
-	tar -zxvf test_data.tgz
+data: test_data.tgz
+test_data.tgz: 
+	wget -O test_data.tgz "https://www.ebi.ac.uk/~tl344/bedparse_test_data.tgz" && tar -zxvf test_data.tgz
 
 .PHONY: fivep
 fivep: data
