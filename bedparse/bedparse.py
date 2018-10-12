@@ -48,13 +48,17 @@ def prom(args):
     tsvfile.close()
 
 def bed12tobed6(args):
+    if args.whichExon is not "all" and args.keepIntrons:
+        raise BEDexception("--keepIntrons is only allowed with --whichExon all")
     with args.bedfile as tsvfile:
         for line in tsvfile:
-            for el in bedline(line.split('\t')).bed12tobed6(appendExN=args.appendExN):
+            tx = bedline(line.split('\t'))
+            exon_list = tx.bed12tobed6(appendExN=args.appendExN, whichExons=args.whichExon)
+            for el in exon_list:
                 el.print()
             if(args.keepIntrons):
                 nameSub=re.compile("_Exon([0-9]+)")
-                for el in bedline(line.split('\t')).introns().bed12tobed6(appendExN=args.appendExN):
+                for el in tx.introns().bed12tobed6(appendExN=args.appendExN):
                     el.name=nameSub.sub(r"_Intron\1", el.name)
                     el.print()
     tsvfile.close()
@@ -196,7 +200,8 @@ def main(args=None):
             """)
     parser_bed12tobed6.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the GTF file.")
     parser_bed12tobed6.add_argument("--appendExN", action="store_true", help="Appends the exon number to the transcript name.")
-    parser_bed12tobed6.add_argument("--keepIntrons", action="store_true", help="Add records for introns as well.")
+    parser_bed12tobed6.add_argument("--whichExon",type=str, default='all', choices=["all", "first", "last"], help="Which exon to return. First and last respectively report the first or last exon relative to the TSS (i.e. taking strand into account).")
+    parser_bed12tobed6.add_argument("--keepIntrons", action="store_true", help="Add records for introns as well. Only allowed if --whichExon all")
     parser_bed12tobed6.set_defaults(func=bed12tobed6)
     
     parser_convertChr = subparsers.add_parser('convertChr', help="Convert chromosome names between UCSC and Ensembl formats",

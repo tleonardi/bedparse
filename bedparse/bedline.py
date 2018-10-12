@@ -316,9 +316,14 @@ class bedline(object):
         return startGenome
 
 
-    def bed12tobed6(self, appendExN=False):
+    def bed12tobed6(self, appendExN=False, whichExon="all"):
         """ Returns a list of bedlines (bed6) corresponding to the exons."""
         if(self.bedType!=12): raise BEDexception("Only BED12 lines can be coverted to BED6")
+        if whichExon not in ("all", "first", "last"):
+            raise BEDexception("whichExon has to be one of [all, first, last]")
+        if whichExon is not "all" and self.stranded!=1:
+            raise BEDexception("whichExon is only allowed if the transcripts are stranded. %s is not"%self.name)
+
         exons=list()
         lengths=[int(x) for x in self.exLengths.split(",")[:-1]]
         starts=[int(x) for x in self.exStarts.split(",")[:-1]]
@@ -326,7 +331,19 @@ class bedline(object):
             name=self.name
             if(appendExN == True): name+="_Exon"+'%03d'%(n+1)
             exons.append(bedline([self.chr, self.start+starts[n],  self.start+starts[n]+lengths[n], name, self.score, self.strand]))
-        return(exons)
+
+        if whichExon == "all":
+            return(exons)
+        elif whichExon == "first":
+            if self.strand == "+":
+                return(exons[0])
+            elif self.strand == "-":
+                return(exons[-1])
+        elif whichExon == "last":
+            if self.strand == "+":
+                return(exons[-1])
+            elif self.strand == "-":
+                return(exons[0])
 
     def translateChr(self, assembly, target, suppress=False, all=False, patches=False):
         """ Convert the chromosome name to Ensembl or UCSC """
