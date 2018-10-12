@@ -9,6 +9,9 @@ __pycache__/
 /*.egg-info
 
 /tests/test_data.tgz
+/tests/ensembl*
+/tests/extracted*
+/tests/gencode*
 /virtualenv/
 /build/
 

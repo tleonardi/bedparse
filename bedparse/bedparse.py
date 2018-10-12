@@ -53,7 +53,7 @@ def bed12tobed6(args):
     with args.bedfile as tsvfile:
         for line in tsvfile:
             tx = bedline(line.split('\t'))
-            exon_list = tx.bed12tobed6(appendExN=args.appendExN, whichExons=args.whichExon)
+            exon_list = tx.bed12tobed6(appendExN=args.appendExN, whichExon=args.whichExon)
             for el in exon_list:
                 el.print()
             if(args.keepIntrons):
