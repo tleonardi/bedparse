@@ -336,14 +336,14 @@ class bedline(object):
             return(exons)
         elif whichExon == "first":
             if self.strand == "+":
-                return(exons[0])
+                return([exons[0]])
             elif self.strand == "-":
-                return(exons[-1])
+                return([exons[-1]])
         elif whichExon == "last":
             if self.strand == "+":
-                return(exons[-1])
+                return([exons[-1]])
             elif self.strand == "-":
-                return(exons[0])
+                return([exons[0]])
 
     def translateChr(self, assembly, target, suppress=False, all=False, patches=False):
         """ Convert the chromosome name to Ensembl or UCSC """
