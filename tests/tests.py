@@ -103,18 +103,18 @@ class KnownValues(unittest.TestCase):
 
     known_bed12tobed6_first=(
             (['chr1', 14403, 29570, 'ENST00000488147.1', '0', '+', 29570, 29570, 0,11,'98,34,152,159,198,136,137,147,99,154,37,', '0,601,1392,2203,2454,2829,3202,3511,3864,10334,15130,'],
-                 ['chr1', 14403, 14501, 'ENST00000488147.1_Exon001', '0', '+']
+                 [['chr1', 14403, 14501, 'ENST00000488147.1_Exon001', '0', '+']]
             ),
             (['chr1', 14403, 29570, 'ENST00000488147.1', '0', '-', 29570, 29570, 0,11,'98,34,152,159,198,136,137,147,99,154,37,', '0,601,1392,2203,2454,2829,3202,3511,3864,10334,15130,'],
-                 ['chr1', 29533, 29570, 'ENST00000488147.1_Exon011', '0', '-']
+                 [['chr1', 29533, 29570, 'ENST00000488147.1_Exon011', '0', '-']]
             ))
 
     known_bed12tobed6_last=(
             (['chr1', 14403, 29570, 'ENST00000488147.1', '0', '+', 29570, 29570, 0,11,'98,34,152,159,198,136,137,147,99,154,37,', '0,601,1392,2203,2454,2829,3202,3511,3864,10334,15130,'],
-                 ['chr1', 29533, 29570, 'ENST00000488147.1_Exon011', '0', '+']
+                 [['chr1', 29533, 29570, 'ENST00000488147.1_Exon011', '0', '+']]
             ),
             (['chr1', 14403, 29570, 'ENST00000488147.1', '0', '-', 29570, 29570, 0,11,'98,34,152,159,198,136,137,147,99,154,37,', '0,601,1392,2203,2454,2829,3202,3511,3864,10334,15130,'],
-                ['chr1', 14403, 14501, 'ENST00000488147.1_Exon001', '0', '-']
+                [['chr1', 14403, 14501, 'ENST00000488147.1_Exon001', '0', '-']]
             ))
 
     def test_promoter100(self):
@@ -182,16 +182,16 @@ class KnownValues(unittest.TestCase):
     def test_bed12tobed6_first(self):
         '''bed12tobed6(whichExon=first) should return correct BED6 records for know cases'''
         for ((bed), (res)) in self.known_bed12tobed6_first:
-            res=bedparse.bedline(res)
+            res=bedparse.bedline(res[0])
             result = bedparse.bedline(bed).bed12tobed6(whichExon="first", appendExN=True)
-            self.assertEqual(result,res)
+            self.assertEqual(result[0],res)
 
     def test_bed12tobed6_last(self):
         '''bed12tobed6(whichExon=last) should return correct BED6 records for know cases'''
         for ((bed), (res)) in self.known_bed12tobed6_last:
-            res=bedparse.bedline(res)
+            res=bedparse.bedline(res[0])
             result = bedparse.bedline(bed).bed12tobed6(whichExon="last", appendExN=True)
-            self.assertEqual(result,res)
+            self.assertEqual(result[0],res)
 
 if __name__ == '__main__':
     unittest.main()
