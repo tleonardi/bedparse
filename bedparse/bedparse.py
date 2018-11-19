@@ -144,7 +144,7 @@ def main(args=None):
     parser_cds.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the BED file.")
     parser_cds.set_defaults(func=cds)
     
-    parser_prom = subparsers.add_parser('promoter', help="Prints the promoters of a transcript.")
+    parser_prom = subparsers.add_parser('promoter', help="Prints the promoters of transcripts.")
     parser_prom.add_argument("--up",type=int, default=500, help="Get this many nt upstream of each feature.")
     parser_prom.add_argument("--down",type=int, default=500, help="Get this many nt downstream of each feature.")
     parser_prom.add_argument("--unstranded",action="store_true", help="Do not consider strands.")
