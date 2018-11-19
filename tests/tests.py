@@ -136,6 +136,22 @@ class KnownValues(unittest.TestCase):
                 ),
                 (
                     # Transcript
+                    ['chr1', 100, 210, 'Tx1', '0', '-', 100, 100, 0, 2, '10,10,', '0,100,'],
+                    # Tuple of tuples (txCoord, GenomeCoord)
+                    ((4,104), (9,109), (10,200), (0,100), (19, 209)),
+                    # Tuple of txCoord that should throw exception
+                    (-10, -1, 210, 20)
+                ),
+                (
+                    # Transcript
+                    ['chr1', 1000, 4500, 'Tx1', '0', '-', 1000, 1000, 0, 3, '1000,100,500,', '0,1900,3000,'],
+                    # Tuple of tuples (txCoord, GenomeCoord)
+                    ((0, 1000), (500, 1500), (1050, 2950), (1000, 2900)),
+                    # Tuple of txCoord that should throw exception
+                    (-10, -100, "b", 0.7, 1600, 10000, 4500)
+                ),
+                (
+                    # Transcript
                     ['chr1', 1000, 2000 ],
                     # Tuple of tuples (txCoord, GenomeCoord)
                     ((0, 1000), (500, 1500), (999, 1999)),

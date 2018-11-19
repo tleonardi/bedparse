@@ -302,10 +302,6 @@ class bedline(object):
         if not isinstance(coord, int):
             raise BEDexception("coord must be of type integer")
         
-        # Throw an exception is the coordinate is invalid
-        if(coord<0 or coord>self.end-self.start-1):
-            raise BEDexception("This coordinate doesn't exist in the transcript")
-
         # If the bed record if not type 12 set exStarts
         # and exLens to the whole transcript
         if self.bedType < 12:
@@ -313,25 +309,26 @@ class bedline(object):
             exLens=[self.end-self.start]
             nEx=1
         else:
-            exStarts=self.exStarts.split(',')
-            exLens=self.exLengths.split(',')
+            exStarts = [ int(i) for i in self.exStarts.split(',') if i!='' ] 
+            exLens = [ int(i) for i in self.exLengths.split(',')if i!='' ]
             nEx=self.nEx
         
-        if(coord == 0):
+        # Throw an exception is the coordinate is invalid
+        if(coord<0 or coord>=sum(exLens)):
+            raise BEDexception("This coordinate doesn't exist in the transcript")
+        elif(coord == 0):
             startGenome=self.start
         else:
             cumLen=0
             i=0 
-            #print("CumLen: %s Coord: %s" %(cumLen, coord))
-            while cumLen < coord: 
-                cumLen+=int(exLens[i])
+            while cumLen <= coord: 
+                cumLen+=exLens[i]
                 i+=1
                 if(i>=nEx):
                     break
             startEx=i-1
-            #print("startEx=",startEx)
-            exonStartOffset=int(exLens[startEx])-(cumLen-coord)
-            startGenome=self.start+int(exStarts[startEx])+exonStartOffset
+            exonStartOffset=exLens[startEx]-(cumLen-coord)
+            startGenome=self.start+exStarts[startEx]+exonStartOffset
         return startGenome
 
 
