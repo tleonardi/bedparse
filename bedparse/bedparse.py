@@ -144,7 +144,7 @@ def main(args=None):
     parser_cds.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the BED file.")
     parser_cds.set_defaults(func=cds)
     
-    parser_prom = subparsers.add_parser('promoter', help="Prints the promoters of coding genes.")
+    parser_prom = subparsers.add_parser('promoter', help="Prints the promoters of transcripts.")
     parser_prom.add_argument("--up",type=int, default=500, help="Get this many nt upstream of each feature.")
     parser_prom.add_argument("--down",type=int, default=500, help="Get this many nt downstream of each feature.")
     parser_prom.add_argument("--unstranded",action="store_true", help="Do not consider strands.")
@@ -192,8 +192,9 @@ def main(args=None):
             file.""")
     parser_gtf2bed.add_argument("gtf", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the GTF file.")
     parser_gtf2bed.add_argument("--extraFields",type=str, default='', help="Comma separated list of extra GTF fields to be added after col 12 (e.g. gene_id,gene_name).")
-    parser_gtf2bed.add_argument("--filterType",type=str, default='', help="Comma separated list of 'transcript_type' types to retain.")
-    parser_gtf2bed.set_defaults(func=lambda args: gtf2bed(args.gtf, args.extraFields.split(','), args.filterType.split(',')))
+    parser_gtf2bed.add_argument("--filterKey", type=str, default='transcript_biotype', help="GTF extra field on which to apply the filtering")
+    parser_gtf2bed.add_argument("--filterType",type=str, default='', help="Comma separated list of filterKey field values to retain.")
+    parser_gtf2bed.set_defaults(func=lambda args: gtf2bed(args.gtf, extra=args.extraFields.split(','), filterKey=args.filterKey, filterType=args.filterType.split(',')))
  
     parser_bed12tobed6 = subparsers.add_parser('bed12tobed6', 
             help="""Converts a BED12 file to BED6 format.
@@ -217,17 +218,11 @@ def main(args=None):
     parser_convertChr.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the BED file.")
     parser_convertChr.add_argument("--assembly", type=str, help="Assembly of the BED file (either hg38 or mm10).", required=True)
     parser_convertChr.add_argument("--target", type=str, help="Desidered chromosome name convention (ucsc or ens).", required=True)
-    parser_convertChr.add_argument("--allowMissing", "-a" ,action="store_true", help="""When a chromsome name can't be matched between USCS and Ensembl
-                                                                                        set it to 'NA' (by default thrown as error).""")
-    parser_convertChr.add_argument("--suppressMissing", "-s" ,action="store_true", help="""When a chromsome name can't be matched between USCS and Ensembl
-                                                                                           do not report it in the output (by default throws an error).""")
-    parser_convertChr.add_argument("--patches", "-p" ,action="store_true", help="""Allows conversion of all patches up to p11 for hg38 and p4 for mm10.
-                                                                                   Without this option, if the BED file contains contigs added by a patch
-                                                                                   the conversion terminates with an error (unless the -a or -s flags are
-                                                                                   present).""")
+    parser_convertChr.add_argument("--allowMissing", "-a" ,action="store_true", help="""When a chromsome name can't be matched between USCS and Ensembl set it to 'NA' (by default thrown as error).""")
+    parser_convertChr.add_argument("--suppressMissing", "-s" ,action="store_true", help="""When a chromsome name can't be matched between USCS and Ensembl do not report it in the output (by default throws an error).""")
+    parser_convertChr.add_argument("--patches", "-p" ,action="store_true", help="""Allows conversion of all patches up to p11 for hg38 and p4 for mm10. Without this option, if the BED file contains contigs added by a patch the conversion terminates with an error (unless the -a or -s flags are present).""")
 
     parser_convertChr.set_defaults(func=convertChr)
-    
  
     args = parser.parse_args()
     args.func(args)

@@ -295,24 +295,40 @@ class bedline(object):
 
 
     def tx2genome(self, coord):
-        """ Given a position in transcript coordinates returns the equivalent in genome coordinates"""
-        exStarts=self.exStarts.split(',')
-        exLens=self.exLengths.split(',')
-        if(coord<=0):
+        """ Given a position in transcript coordinates returns the equivalent in genome coordinates.
+            The transcript coordinates are considered without regard to strand, i.e. 0 is the leftmost
+            position for both + and - strand transcripts."""
+
+        if not isinstance(coord, int):
+            raise BEDexception("coord must be of type integer")
+        
+        # If the bed record if not type 12 set exStarts
+        # and exLens to the whole transcript
+        if self.bedType < 12:
+            exStarts=[0]
+            exLens=[self.end-self.start]
+            nEx=1
+        else:
+            exStarts = [ int(i) for i in self.exStarts.split(',') if i!='' ] 
+            exLens = [ int(i) for i in self.exLengths.split(',')if i!='' ]
+            nEx=self.nEx
+        
+        # Throw an exception is the coordinate is invalid
+        if(coord<0 or coord>=sum(exLens)):
+            raise BEDexception("This coordinate doesn't exist in the transcript")
+        elif(coord == 0):
             startGenome=self.start
         else:
             cumLen=0
             i=0 
-            #print("CumLen: %s Coord: %s" %(cumLen, coord))
-            while cumLen < coord: 
-                cumLen+=int(exLens[i])
+            while cumLen <= coord: 
+                cumLen+=exLens[i]
                 i+=1
-                if(i>=self.nEx):
+                if(i>=nEx):
                     break
             startEx=i-1
-            #print("startEx=",startEx)
-            exonStartOffset=int(exLens[startEx])-(cumLen-coord)
-            startGenome=self.start+int(exStarts[startEx])+exonStartOffset
+            exonStartOffset=exLens[startEx]-(cumLen-coord)
+            startGenome=self.start+exStarts[startEx]+exonStartOffset
         return startGenome
 
 
