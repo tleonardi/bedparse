@@ -3,7 +3,7 @@ import csv
 import re
 from bedparse import bedline
 
-def gtf2bed(gtf, extra=[''], filterType=['']):
+def gtf2bed(gtf, extra=[''], filterKey="transcript_biotype", filterType=['']):
     gtfRecords={'exon':list(), 'transcript': list(), 'cds':list()}
     transcripts=dict()
     exons=dict()
@@ -24,9 +24,10 @@ def gtf2bed(gtf, extra=[''], filterType=['']):
                     extrainfo.setdefault(txName, dict())[field]=re.sub('.*'+field+' "?([^"]+)"?;.*', "\\1", line[8])
                     # If no substitution occured, set the extra field to '.'
                     if(extrainfo[txName][field] == line[8]): extrainfo[txName][field] = "."
-            if filterType!=[''] and 'transcript_type' not in extra:
-                field='transcript_type'
-                extrainfo.setdefault(txName, dict())[field]=re.sub('.*'+field+' "?([^"]+)"?;.*', "\\1", line[8])
+            if filterType!=[''] and filterKey not in extra:
+                extrainfo.setdefault(txName, dict())[filterKey]=re.sub('.*'+filterKey+' "?([^"]+)"?;.*', "\\1", line[8])
+                # If no substitution occured, set the extra field to '.'
+                if(extrainfo[txName][filterKey] == line[8]): extrainfo[txName][field] = "."
         # Parse exon lines
         if(line[2]=='exon'):
             txName=re.sub('.+transcript_id "([^"]+)";.+', "\\1", line[8])
@@ -55,7 +56,7 @@ def gtf2bed(gtf, extra=[''], filterType=['']):
 
     for transcript in transcripts.keys():
         if(filterType!=['']):
-            if extrainfo[transcript]['transcript_type'] not in filterType:
+            if extrainfo[transcript][filterKey] not in filterType:
                 continue
         if(transcript in cds.keys()):
             cdsStart=int(cds[transcript][0])-1
