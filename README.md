@@ -3,17 +3,21 @@
 # Bedparse
 Bedparse is a simple python module and CLI tool to perform common operations on BED files.
 
-*This program is under active development and is likely to contain bugs.*
+It offers the following functionality:
+* Filtering of transcripts based on annotations
+* Joining of annotation files based on transcript names
+* Conversion from GTF to BED format
+* Conversion from UCSC to Ensembl chromosome names (and viceversa)
+* Conversion from bed12 to bed6
+* Promoter reporting
+* Intron reporting
+* CDS reporting
+* UTR reporting 
 
 ## Installation
 
 ```
-git clone git@github.com:tleonardi/bedparse.git
-cd bedparse
-```
-and then:
-```
-pip3 install .
+pip install bedparse
 ```
 
 ## Usage
@@ -31,7 +35,7 @@ positional arguments:
     3pUTR               Prints the 3' of coding genes.
     5pUTR               Prints the 5' of coding genes.
     cds                 Prints the CDS of coding genes.
-    promoter            Prints the promoters of coding genes.
+    promoter            Prints the promoters of a transcript.
     introns             Prints BED records corresponding to the introns of
                         each transcript in the original file.
     filter              Filters a BED file based on an annotation.
