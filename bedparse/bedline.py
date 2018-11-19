@@ -295,10 +295,29 @@ class bedline(object):
 
 
     def tx2genome(self, coord):
-        """ Given a position in transcript coordinates returns the equivalent in genome coordinates"""
-        exStarts=self.exStarts.split(',')
-        exLens=self.exLengths.split(',')
-        if(coord<=0):
+        """ Given a position in transcript coordinates returns the equivalent in genome coordinates.
+            The transcript coordinates are considered without regard to strand, i.e. 0 is the leftmost
+            position for both + and - strand transcripts."""
+
+        if not isinstance(coord, int):
+            raise BEDexception("coord must be of type integer")
+        
+        # Throw an exception is the coordinate is invalid
+        if(coord<0 or coord>self.end-self.start-1):
+            raise BEDexception("This coordinate doesn't exist in the transcript")
+
+        # If the bed record if not type 12 set exStarts
+        # and exLens to the whole transcript
+        if self.bedType < 12:
+            exStarts=[0]
+            exLens=[self.end-self.start]
+            nEx=1
+        else:
+            exStarts=self.exStarts.split(',')
+            exLens=self.exLengths.split(',')
+            nEx=self.nEx
+        
+        if(coord == 0):
             startGenome=self.start
         else:
             cumLen=0
@@ -307,7 +326,7 @@ class bedline(object):
             while cumLen < coord: 
                 cumLen+=int(exLens[i])
                 i+=1
-                if(i>=self.nEx):
+                if(i>=nEx):
                     break
             startEx=i-1
             #print("startEx=",startEx)
