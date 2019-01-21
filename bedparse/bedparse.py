@@ -136,8 +136,8 @@ def main(args=None):
     desc_convertChr="""Convert chromosome names between UCSC and Ensembl formats.
                        The conversion supports the hg38 assembly up to patch 11 and the mm10 assembly up to patch 4. By default patches
                        are not converted (because the UCSC genome browser does not support them), but can be enabled using the -p flag.
-                       When the BED file contains a chromsome that is not recognised, by default the program stops and throws an error. Alternatively,
-                       unrecognised chrosomes can be suppressed (-s) or artificially set to 'NA' (-a)."""
+                       When the BED file contains a chromosome that is not recognised, by default the program stops and throws an error. Alternatively,
+                       unrecognised chromosomes can be suppressed (-s) or artificially set to 'NA' (-a)."""
     if args is None:
         args = sys.argv[1:]
 
@@ -213,8 +213,8 @@ def main(args=None):
     parser_convertChr.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the BED file.")
     parser_convertChr.add_argument("--assembly", type=str, help="Assembly of the BED file (either hg38 or mm10).", required=True)
     parser_convertChr.add_argument("--target", type=str, help="Desidered chromosome name convention (ucsc or ens).", required=True)
-    parser_convertChr.add_argument("--allowMissing", "-a" ,action="store_true", help="""When a chromsome name can't be matched between USCS and Ensembl set it to 'NA' (by default thrown as error).""")
-    parser_convertChr.add_argument("--suppressMissing", "-s" ,action="store_true", help="""When a chromsome name can't be matched between USCS and Ensembl do not report it in the output (by default throws an error).""")
+    parser_convertChr.add_argument("--allowMissing", "-a" ,action="store_true", help="""When a chromosome name can't be matched between USCS and Ensembl set it to 'NA' (by default thrown as error).""")
+    parser_convertChr.add_argument("--suppressMissing", "-s" ,action="store_true", help="""When a chromosome name can't be matched between USCS and Ensembl do not report it in the output (by default throws an error).""")
     parser_convertChr.add_argument("--patches", "-p" ,action="store_true", help="""Allows conversion of all patches up to p11 for hg38 and p4 for mm10. Without this option, if the BED file contains contigs added by a patch the conversion terminates with an error (unless the -a or -s flags are present).""")
     parser_convertChr.set_defaults(func=convertChr)
  

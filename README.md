@@ -54,8 +54,12 @@ or
 bedparse promoter --unstranded transcritpome.bed > promoters.bed
 ```
 
-Internally, bedparse processes a bedfile line by line by instantiating objects of the bedline class. The bedline class implements an init() method that performs several checks on each field in order to ensure the correctness of the format, whereas the other methods of the class implement all the operations descrbied below (see functionality). Despite the simplicity of most of the operations supported by bedparse, all functions are thouroughly and rigourously tested through an automated test suit to ensure the accuracy and correctness of the results.
-Additionally, bedparse also provides to conversion operations: gtf2bed allows converting Ensembl/Gencode Gene transfer format (GTF) files into bed format; convertChr implements an internal dictionary that allows conversion of human and mouse chrosome names between the two most widely used formats, i.e. the Ensembl and the UCSC naming schemes.
+Despite the simplicity of most of its operations, all functions in bedparse are thouroughly and rigourously tested through an automated test suit to ensure the accuracy and correctness of the results. Additionally, bedparse performs syntax validation checks on the input BED files and warns the user in case of malformed or unsupported formats.
+
+Additionally, bedparse also provides two format conversion operations:
+* gtf2bed allows converting Ensembl/Gencode Gene transfer format (GTF) files into bed format
+* convertChr implements an internal dictionary that allows conversion of human and mouse chromosome names between the two most widely used formats, i.e. the Ensembl and the UCSC naming schemes.
+
 
 ## Installation
 
@@ -64,13 +68,6 @@ pip install bedparse
 ```
 
 ## Usage
-
-The basic syntax in the form: `bedparse subcommanda [parameters]`.
-
-For a list of all subcommands and a brief explanation of what they do type: `bedparse --help`
-
-For a detailed explanation of each subcommand and a list of its paramters use the `--help` options after the subcommanda name. E.g.: `bedparse promoter --help`
-
 ```
 > bedparse --help
 usage: bedparse [-h] [--version]
@@ -101,9 +98,20 @@ optional arguments:
   --version, -v         show program's version number and exit
 ```
 
+The basic syntax in the form: `bedparse subcommand [parameters]`.
+
+For a list of all subcommands and a brief explanation of what they do, use: `bedparse --help`
+
+For a detailed explanation of each subcommand and a list of its paramters, use the `--help` options after the subcommand's name, e.g.: `bedparse promoter --help`
+
+
 
 ### 3'/5' UTRs
-This commands report the 5' or 3' UTRs of each coding transcript in the BED file. The UTRs are defined as the regions between transcript start/end and CDS start/end (the CDS, in turn, is defined as the region between thickStart and thickEnd). Transcripts with an undefined CDS (i.e. with thickStart and thickEnd set to the same value) are not reported.
+Report the 5' or 3' UTRs of each coding transcript in the BED file. 
+
+UTRs are defined as the region between transcript start/end and CDS start/end (the CDS is in turn defined as the region between thickStart and thickEnd).
+
+Transcripts with an undefined CDS (i.e. with thickStart and thickEnd set to the same value) are not reported.
 
 ```
 > cat transcripts.bed 
@@ -114,7 +122,7 @@ chr1	167787921	167790819	ENST00000392121.7	0	+	167787921	167787921	0	1	2898,	0,
 
 ```
 ### CDS
-Report the CDS of each coding transcript in the BED file. Transcripts with distinct values of thickStart and thickEnd are considered coding. Transcripts without CDS are not reported." 
+Report the CDS of each coding transcript in the BED file. Transcripts with distinct values of thickStart and thickEnd are considered coding. Transcripts without CDS are not reported.
 
 ```
 > cat transcripts.bed 
@@ -217,10 +225,10 @@ chr1	201283451	201332993	ENST00000367324.7	0	+	GeneY	Another_field
 
 ```
 
-# Convert GTF to BED
+### Convert GTF to BED
 Converts a GTF file to BED12 format. This tool supports the Ensembl GTF format. The GTF file must contain 'transcript' and 'exon' features in field 3. If the GTF file also annotates 'CDS' 'start_codon' or 'stop_codon' these are used to annotate the thickStart and thickEnd in the BED file.
 
-# Convert BED12 to BED6
+### Convert BED12 to BED6
 Convert the BED12 format into BED6 by reporting a separate line for each block of the original record. 
 
 ```
@@ -238,8 +246,8 @@ chr1	67131141	67131227	ENST00000371007.6	0	-
 chr1	67231845	67231852	ENST00000371007.6	0	-
 ```
 
-# Convert chromosome names
-Convert chromosome names between UCSC and Ensembl formats. The conversion supports the hg38 assembly up to patch 11 and the mm10 assembly up to patch 4. By default patches are not converted (because the UCSC genome browser does not support them), but can be enabled using the -p flag. When the BED file contains a chromsome that is not recognised, by default the program stops and throws an error. Alternatively, unrecognised chrosomes can be suppressed (-s) or artificially set to 'NA' (-a).
+### Convert chromosome names
+Convert chromosome names between UCSC and Ensembl formats. The conversion supports the hg38 assembly up to patch 11 and the mm10 assembly up to patch 4. By default patches are not converted (because the UCSC genome browser does not support them), but can be enabled using the -p flag. When the BED file contains a chromosome that is not recognised, by default the program stops and throws an error. Alternatively, unrecognised chromosomes can be suppressed (-s) or artificially set to 'NA' (-a).
 
 ```
 > cat transcripts.bed 
@@ -254,3 +262,7 @@ CHR_HSCHR22_3_CTG1	137191	137686	ENST00000630841.1	0	-
 KI270706.1	45985	46062	ENST00000611371.2	0	+
 MT	3229	3304	ENST00000386347.1	0	+
 ```
+
+## Implementations notes 
+Internally, bedparse processes a bedfile line by line by instantiating objects of the bedline class. The bedline class implements an init() method that performs several checks on each field in order to ensure the correctness of the format, whereas the other methods of the class implement all the bedparse operations (see functionality).
+
