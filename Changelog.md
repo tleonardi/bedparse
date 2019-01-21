@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.0] - 2019/01/19
+
+### Fixed
+- Improvements to the CLI messages
+- Major documentation rewrite
+
 ## [0.1.2] - 2018/11/09
 
 ### Added
