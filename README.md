@@ -104,7 +104,7 @@ For a list of all subcommands and a brief explanation of what they do, use: `bed
 
 For a detailed explanation of each subcommand and a list of its paramters, use the `--help` options after the subcommand's name, e.g.: `bedparse promoter --help`
 
-
+---
 
 ### 3'/5' UTRs
 
@@ -129,6 +129,9 @@ chr1	167721988	167790819	ENST00000392121.7	0	+	167722151	167787921	0	3	254,167,3
 chr1	167787921	167790819	ENST00000392121.7	0	+	167787921	167787921	0	1	2898,	0,
 
 ```
+
+---
+
 ### CDS
 
 #### Usage
@@ -156,7 +159,7 @@ chr1	167721988	167790819	ENST00000392121.7	0	+	167722151	167787921	0	3	254,167,3
 chr1	167722151	167787921	ENST00000392121.7	0	+	167722151	167787921	0	3	91,167,102,	0,43431,65668,
 ```
 
-
+---
 
 ### Promoters
 This command reports the promoter of each transcript in the input BED file. The promoter is defined as a fixed interval around the TSS.                                                                                                     
@@ -191,6 +194,7 @@ chr1	167721488	167722488	ENST00000392121.7
 chr1	167721888	167722088	ENST00000392121.7
 ```
 
+---
 
 ### Introns
 Reports BED12 lines corresponding to the introns of each transcript. Unspliced transcripts are not reported.
@@ -220,6 +224,7 @@ chr1	167721988	167790819	ENST00000392121.7	0	+	167722151	167787921	0	3	254,167,3
 chr1	167722242	167787819	ENST00000392121.7	0	+	167722242	167722242	0	2	43340,22070,	0,43507,
 ```
 
+---
 
 ### Filter
 Filters a BED file based on an annotation file. BED entries with a name (i.e. col4) that appears in the specified column of the annotation are printed to stdout. For efficiency reasons this command doesn't perform BED validation.
@@ -276,6 +281,7 @@ chr1	201283451	201332993	ENST00000263946.7	0	+
 chr1	201283451	201332993	ENST00000367324.7	0	+
 ```
 
+---
 
 ### Join
 Adds the content of an annotation file to a BED file as extra columns. The two files are joined by matching the BED Name field (column 4) with a user-specified field of the annotation file. 
@@ -344,6 +350,8 @@ chr1	201283451	201332993	ENST00000367324.7	0	+	GeneY	Another_field
 
 ```
 
+---
+
 ### Convert GTF to BED
 Converts a GTF file to BED12 format. This tool supports the Ensembl GTF format. The GTF file must contain 'transcript' and 'exon' features in field 3. If the GTF file also annotates 'CDS' 'start_codon' or 'stop_codon' these are used to annotate the thickStart and thickEnd in the BED file.
 
@@ -374,6 +382,7 @@ optional arguments:
                         retain.
 ```
 
+---
 
 ### Convert BED12 to BED6
 Convert the BED12 format into BED6 by reporting a separate line for each block of the original record. 
@@ -417,6 +426,8 @@ chr1	67127165	67127257	ENST00000371007.6	0	-
 chr1	67131141	67131227	ENST00000371007.6	0	-
 chr1	67231845	67231852	ENST00000371007.6	0	-
 ```
+
+---
 
 ### Convert chromosome names
 Convert chromosome names between UCSC and Ensembl formats. The conversion supports the hg38 assembly up to patch 11 and the mm10 assembly up to patch 4. By default patches are not converted (because the UCSC genome browser does not support them), but can be enabled using the -p flag. When the BED file contains a chromosome that is not recognised, by default the program stops and throws an error. Alternatively, unrecognised chromosomes can be suppressed (-s) or artificially set to 'NA' (-a).
