@@ -1,7 +1,12 @@
 from setuptools import setup
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(name='bedparse',
       description='A simple library and CLI tool to manipulate BED files',
+      long_description=long_description,
+      long_description_content_type="text/markdown",
       version="0.2.0",
       url='https://github.com/tleonardi/bedparse',
       author='Tommaso Leonardi',
@@ -15,6 +20,7 @@ setup(name='bedparse',
           'Programming Language :: Python :: 3.4',
           'Programming Language :: Python :: 3.5',
           'Programming Language :: Python :: 3.6'
+          'Programming Language :: Python :: 3.7'
       ],
       packages=['bedparse'],
       install_requires=['argparse', 'setuptools'],
