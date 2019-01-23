@@ -232,14 +232,13 @@ Filters a BED file based on an annotation file. BED entries with a name (i.e. co
 #### Usage
 
 ```
-> bedparse join --help
-usage: bedparse join [-h] --annotation ANNOTATION [--column COLUMN]
-                     [--separator SEPARATOR] [--empty EMPTY] [--noUnmatched]
-                     [bedfile]
+> bedparse filter -h
+usage: bedparse filter [-h] --annotation ANNOTATION [--column COLUMN]
+                       [bedfile]
 
-Adds the content of an annotation file to a BED file as extra columns. The two
-files are joined by matching the BED Name field (column 4) with a user-
-specified field of the annotation file.
+Filters a BED file based on an annotation. BED entries with a name (i.e. col4)
+that appears in the specified column of the annotation are printed to stdout.
+For efficiency reasons this command doesn't perform BED validation.
 
 positional arguments:
   bedfile               Path to the BED file.
@@ -250,12 +249,6 @@ optional arguments:
                         Path to the annotation file.
   --column COLUMN, -c COLUMN
                         Column of the annotation file (1-based, default=1).
-  --separator SEPARATOR, -s SEPARATOR
-                        Field separator for the annotation file (default tab)
-  --empty EMPTY, -e EMPTY
-                        String to append to empty records (default '.').
-  --noUnmatched, -n     Do not print unmatched lines.
-
 ```
 
 #### Examples
