@@ -10,9 +10,9 @@ authors:
     orcid: 0000-0002-4449-1863
     affiliation: "1, 2"
 affiliations:
- - name: The Gurdon Institute, University of Cambridge, Tennis Court Road, Cambridge CB2 1QN, UK
+ - name: The Gurdon Institute, University of Cambridge, Cambridge, UK
    index: 1
- - name: Center for Genomic Science IIT@SEMM, Istituto Italiano di Tecnologia (IIT), Via Adamello 16, 20139 Milan, Italy
+ - name: Center for Genomic Science IIT\@SEMM, Istituto Italiano di Tecnologia (IIT), Milan, Italy
    index: 2
 date: 22 January 2019
 bibliography: paper.bib
@@ -26,6 +26,7 @@ One of the major advantages of the BED format over many of its alternatives is t
 ``Bedparse`` aims to simplify and standardise many of the operations and feature-extractions commonly done on BED files by adhering to the UNIX philosophy of doing one thing and doing it well. Despite the simplicity of many of its functions, bedparse is thouroughly and rigourously tested through an automated test suit to ensure the accuracy and correctness of the results. Additionally, bedparse performs syntax validation checks on the input BED files and warns the user in case of inconsistencies or malformed files.
 
 ``Bedparse`` implements the following functions:
+
 * Filtering of transcripts based on annotations
 * Joining of annotation files based on transcript names
 * Promoter reporting
@@ -34,14 +35,15 @@ One of the major advantages of the BED format over many of its alternatives is t
 * UTR reporting 
 
 In addition to the feature-extraction functions reported above, ``bedparse`` also provides three format conversion tools:
+
 * _convertChr_ implements an internal dictionary that allows conversion of human and mouse chromosome names (including patches) between the two most widely used formats, i.e. the Ensembl and the UCSC naming schemes.
 * _gtf2bed_ allows converting Ensembl/Gencode Gene Transfer Format (GTF) files into BED format, with options to specify extra fields to add after column 12.
 * _bed12tobed6_ converts BED12 files to the BED6 format.
 
-Internally, ``bedparse`` implements a _bedline_ class that performs several checks on each BED field in order to ensure the correctness of the format, and implements methods that performs the functions listed above. This type of design allows ``bedparse`` to be either imported by other projects as a python module or to be used as a standalone tool through its command line interface.
+Internally, ``bedparse`` implements a _bedline_ class that performs several checks on each BED field in order to ensure the correctness of the format, and implements methods that perform the functions listed above. This type of design allows ``bedparse`` to be either imported by other projects as a python module or to be used as a standalone tool through its command line interface.
 
-In conclusion, ``bedparse`` is a light, versatile and portable tool developed using good programming practices and a test-driven development approach. Its use as part of bioinformatic pipelines will contribute to speeding up development time and preventing bugs.
+In conclusion, ``bedparse`` is a light, versatile and portable tool developed using good programming practices and a test-driven development approach. Its use as part of bioinformatics pipelines will contribute to speeding up development time and preventing bugs.
 
-``Bedparse`` is open-source and released under the MIT Licence. The source code is hosted on Github, and releases are automatically tested using Travis CI and archived on Zenodo.
+``Bedparse`` is open-source and released under the MIT Licence. The source code is hosted on [Github](https://github.com/tleonardi/bedparse/), and releases are automatically tested using Travis CI and archived on Zenodo.
 
 # References
