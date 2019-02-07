@@ -65,6 +65,7 @@ def bed12tobed6(args):
 
 def filter(args):
     col=args.column-1
+    inverse=args.inverse
     filterset=set()
     try:
         annotation=open(args.annotation)
@@ -76,7 +77,9 @@ def filter(args):
     annotation.close()
     with args.bedfile as tsvfile:
         for line in tsvfile:
-            if(line.split('\t')[3] in filterset):
+            if(line.split('\t')[3] in filterset and not inverse):
+                print(line.rstrip())
+            elif(line.split('\t')[3] not in filterset and inverse):
                 print(line.rstrip())
     tsvfile.close()
 
@@ -176,6 +179,7 @@ def main(args=None):
             help="Filters a BED file based on an annotation.", description=desc_filter)
     parser_filter.add_argument("--annotation", "-a", type=str, help="Path to the annotation file.", required=True)
     parser_filter.add_argument("--column","-c",type=int, default=1, help="Column of the annotation file (1-based, default=1).")
+    parser_filter.add_argument("--inverse", "-v" ,action="store_true", help="Only report BED entries absent from the annotation file.")
     parser_filter.set_defaults(func=filter)
     parser_filter.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin,
     help="Path to the BED file.")
