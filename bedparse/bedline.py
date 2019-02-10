@@ -109,10 +109,12 @@ class bedline(object):
 
     def promoter(self, up=500, down=500, strand=1):
         """ Returns a bedline of the promoters"""
-        if(not strand or self.strand=="+"):
+        if strand and self.bedType<6:
+            raise BEDexception("You requested stranded promoters, but the BED file appears to be unstranded")
+        if not strand or self.strand=="+":
             start = self.start-up if self.start-up>0 else 0
             end = self.start+down
-        elif(strand and self.strand=="-"):
+        elif strand and self.strand=="-":
             start= self.end-down if self.end-down>0 else 0
             end=self.end+up
         else:
