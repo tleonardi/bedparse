@@ -133,7 +133,7 @@ def validateFormat(args):
             try:
                 validatedLine=bedline(line.split('\t'))
             except BEDexception as formatException:
-                raise BEDexception(f"\nThis doesn't appear to be a valid BED file. There was an error at line {n+1}:\n\t\"{formatException}\"")
+                raise BEDexception("\nThis doesn't appear to be a valid BED file. There was an error at line %s:\n\t\"%s\"" %(n+1, formatException))
                 tsvfile.close()
             else:
                 validatedLine.print()
