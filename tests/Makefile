@@ -9,6 +9,8 @@ SHELL:=/bin/bash
 # ensembl_introns: (e.g. from ucsc)
 # gencode.gtf: from the gencode website
 # gencode.bed: converted from the gtf with gtfToGenePred and genePredToBed
+# bad_bed.bed: example of bed file with bad formatting
+# good_bed: same as bad_bed.bed but with fixed formatting
 # This Makefile automatically downloads the file above as 'test_data.tgz'
 #
 
@@ -44,6 +46,10 @@ introns: data
 gtf2bed: data
 	diff <(bedparse gtf2bed gencode.gtf | sort -k1,1 -k2,2n -k3,3n) <(sort -k1,1 -k2,2n -k3,3n gencode.bed) >/dev/null
 
+.PHONY: validate
+validate: data
+	diff <(bedparse validateFormat -f bad_bed.bed) good_bed.bed >/dev/null
+
 .PHONY: operations
 operations:
 	python3 tests.py
@@ -67,4 +73,6 @@ clean:
 	ensembl_introns_renamed \
 	extracted_introns \
 	ensembl_introns_renamed \
-	ensembl_introns_renamed_filtered
+	ensembl_introns_renamed_filtered \
+	good_bed.bed \
+	bad_bed.bed
