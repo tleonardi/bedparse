@@ -1,9 +1,15 @@
-[![Build Status](https://travis-ci.org/tleonardi/bedparse.svg?branch=master)](https://travis-ci.org/tleonardi/bedparse)
+.. bedparse documentation master file, created by
+   sphinx-quickstart on Mon Jan 28 14:46:58 2019.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
 
-# Bedparse
+Bedparse documentation 
+====================================
 Bedparse is a simple python module and CLI tool to perform common operations on BED files.
 
 It offers the following functionality:
+
+* BED format validation
 * Filtering of transcripts based on annotations
 * Joining of annotation files based on transcript names
 * Conversion from GTF to BED format
@@ -14,12 +20,19 @@ It offers the following functionality:
 * CDS reporting
 * UTR reporting 
 
-## Installation
 
-```
-pip install bedparse
-```
+Contents
+===============
 
-## Documentation
+.. toctree::
+   :maxdepth: 2
 
-[bedparse.rtfd.io](https://bedparse.readthedocs.io/en/latest/)
+   Installation
+   Motivation
+   Usage
+   Tutorial
+
+
+
+
+

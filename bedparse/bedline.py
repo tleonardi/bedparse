@@ -40,11 +40,13 @@ class bedline(object):
         #Validate the strand and set stranded property
         if(self.bedType>=6):
             if(self.strand=="+" or self.strand=="-"):
-                self.stranded=1
+                self.stranded=True
             elif(self.strand=="" or self.strand == "."):
-                self.strand=0
+                self.stranded=False
             else:
                 raise BEDexception("The strand is not any of '+', '-', '.' or '' for transcript: "+self.name)
+        else:
+            self.stranded=False
 
         if(self.bedType==12):
             # Validate nEx, and CDS fields
@@ -109,10 +111,12 @@ class bedline(object):
 
     def promoter(self, up=500, down=500, strand=1):
         """ Returns a bedline of the promoters"""
-        if(not strand or self.strand=="+"):
+        if strand and self.bedType<6:
+            raise BEDexception("You requested stranded promoters, but the BED file appears to be unstranded")
+        if not strand or self.strand=="+":
             start = self.start-up if self.start-up>0 else 0
             end = self.start+down
-        elif(strand and self.strand=="-"):
+        elif strand and self.strand=="-":
             start= self.end-down if self.end-down>0 else 0
             end=self.end+up
         else:
@@ -337,7 +341,7 @@ class bedline(object):
         if(self.bedType!=12): raise BEDexception("Only BED12 lines can be coverted to BED6")
         if whichExon not in ("all", "first", "last"):
             raise BEDexception("whichExon has to be one of [all, first, last]")
-        if whichExon is not "all" and self.stranded!=1:
+        if whichExon is not "all" and not self.stranded:
             raise BEDexception("whichExon is only allowed if the transcripts are stranded. %s is not"%self.name)
 
         exons=list()
