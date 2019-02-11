@@ -1,6 +1,9 @@
 # Bedparse tutorial
 
-![bedparse functions diagrams](https://github.com/tleonardi/bedparse/blob/devel/docs/bedparse.svg)
+
+![](bedparse.svg)
+
+
 
 Hi, thanks for your interest in `bedparse`!
 
