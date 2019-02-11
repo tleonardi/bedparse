@@ -1,6 +1,9 @@
 [![Build Status](https://travis-ci.org/tleonardi/bedparse.svg?branch=master)](https://travis-ci.org/tleonardi/bedparse)
 
 # Bedparse
+
+![](docs/bedparse.svg)
+
 Bedparse is a simple python module and CLI tool to perform common operations on BED files.
 
 It offers the following functionality:
