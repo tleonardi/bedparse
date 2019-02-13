@@ -46,4 +46,7 @@ In conclusion, ``bedparse`` is a light, versatile and portable tool developed us
 
 ``Bedparse`` is open-source and released under the MIT Licence. The source code is hosted on [Github](https://github.com/tleonardi/bedparse/), and releases are automatically tested using Travis CI and archived on Zenodo.
 
+# Acknowledgments
+The author would like to thank Adrien Leger and Luca Pandolfini for testing bedparse and giving useful feedback, and Tony Kouzarides for providing funding for the author.
+
 # References
