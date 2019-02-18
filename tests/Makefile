@@ -19,7 +19,7 @@ all: fivep threep introns gtf2bed operations
 .PHONY: data
 data: test_data.tgz
 test_data.tgz: 
-	wget -O test_data.tgz "https://www.ebi.ac.uk/~tl344/bedparse_test_data.tgz" && tar -zxvf test_data.tgz
+	wget -O test_data.tgz "https://raw.githubusercontent.com/tleonardi/bedparse/devel/tests/test_data.tgz" && tar -zxvf test_data.tgz
 
 .PHONY: fivep
 fivep: data
