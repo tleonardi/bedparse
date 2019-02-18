@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/tleonardi/bedparse.svg?branch=master)](https://travis-ci.org/tleonardi/bedparse)
+[![Build Status](https://travis-ci.org/tleonardi/bedparse.svg?branch=devel)](https://travis-ci.org/tleonardi/bedparse)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
  
 # Bedparse
