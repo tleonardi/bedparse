@@ -298,7 +298,7 @@ class bedline(object):
 
 
 
-    def tx2genome(self, coord):
+    def tx2genome(self, coord, stranded=False):
         """ Given a position in transcript coordinates returns the equivalent in genome coordinates.
             The transcript coordinates are considered without regard to strand, i.e. 0 is the leftmost
             position for both + and - strand transcripts."""
@@ -317,6 +317,9 @@ class bedline(object):
             exLens = [ int(i) for i in self.exLengths.split(',')if i!='' ]
             nEx=self.nEx
         
+        if stranded:
+            coord = sum(exLens)-coord-1
+
         # Throw an exception is the coordinate is invalid
         if(coord<0 or coord>=sum(exLens)):
             raise BEDexception("This coordinate doesn't exist in the transcript")
