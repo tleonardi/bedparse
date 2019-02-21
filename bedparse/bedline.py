@@ -306,6 +306,9 @@ class bedline(object):
         if not isinstance(coord, int):
             raise BEDexception("coord must be of type integer")
         
+        if stranded and not self.stranded:
+            raise BEDexception("The standed option only makes sense for stranded transcripts")
+        
         # If the bed record if not type 12 set exStarts
         # and exLens to the whole transcript
         if self.bedType < 12:
@@ -317,7 +320,7 @@ class bedline(object):
             exLens = [ int(i) for i in self.exLengths.split(',')if i!='' ]
             nEx=self.nEx
         
-        if stranded:
+        if stranded and self.strand == "-":
             coord = sum(exLens)-coord-1
 
         # Throw an exception is the coordinate is invalid

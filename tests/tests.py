@@ -165,6 +165,14 @@ class KnownValues(unittest.TestCase):
                     # Transcript
                     ['chr1', 1000, 2000, 'Tx1', '0', '+', 1000, 1000, 0, 1, '1000,', '0,'],
                     # Tuple of tuples (txCoord, GenomeCoord)
+                    ((0, 1000), (500, 1500), (999, 1999)),
+                    # Tuple of txCoord that should throw exception
+                    (-10, -100, "a", 0.7, 2000, 10000)
+                ),
+                (
+                    # Transcript
+                    ['chr1', 1000, 2000, 'Tx1', '0', '-', 1000, 1000, 0, 1, '1000,', '0,'],
+                    # Tuple of tuples (txCoord, GenomeCoord)
                     ((0, 1999), (500, 1499), (999, 1000)),
                     # Tuple of txCoord that should throw exception
                     (-10, -100, "a", 0.7, 2000, 10000)
