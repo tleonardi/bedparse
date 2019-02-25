@@ -301,7 +301,7 @@ class bedline(object):
     def tx2genome(self, coord, stranded=False):
         """ Given a position in transcript coordinates returns the equivalent in genome coordinates.
             The transcript coordinates are considered without regard to strand, i.e. 0 is the leftmost
-            position for both + and - strand transcripts."""
+            position for both + and - strand transcripts, unless the stranded options is set to True."""
 
         if not isinstance(coord, int):
             raise BEDexception("coord must be of type integer")
