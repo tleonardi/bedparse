@@ -26,8 +26,8 @@ pip install bedparse
 
 ## Documentation
 
-Our documentation is hosted on [Read the Docs](https://bedparse.readthedocs.io/en/master/).
+Our documentation is hosted on [Read the Docs](https://bedparse.readthedocs.io/en/latest/).
 
-We also have a short [tutorial](https://bedparse.readthedocs.io/en/master/Tutorial.html) to guide you through the basic functions.
+We also have a short [tutorial](https://bedparse.readthedocs.io/en/latest/Tutorial.html) to guide you through the basic functions.
 
 
