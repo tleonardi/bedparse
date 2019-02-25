@@ -30,6 +30,7 @@ Contents
    Installation
    Motivation
    Usage
+   APIs reference <bedparse.bedline>
    Tutorial
 
 
