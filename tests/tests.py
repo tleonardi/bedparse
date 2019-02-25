@@ -160,6 +160,33 @@ class KnownValues(unittest.TestCase):
                 )
             ]
 
+    known_tx2genome_stranded=[
+                (
+                    # Transcript
+                    ['chr1', 1000, 2000, 'Tx1', '0', '+', 1000, 1000, 0, 1, '1000,', '0,'],
+                    # Tuple of tuples (txCoord, GenomeCoord)
+                    ((0, 1000), (500, 1500), (999, 1999)),
+                    # Tuple of txCoord that should throw exception
+                    (-10, -100, "a", 0.7, 2000, 10000)
+                ),
+                (
+                    # Transcript
+                    ['chr1', 1000, 2000, 'Tx1', '0', '-', 1000, 1000, 0, 1, '1000,', '0,'],
+                    # Tuple of tuples (txCoord, GenomeCoord)
+                    ((0, 1999), (500, 1499), (999, 1000)),
+                    # Tuple of txCoord that should throw exception
+                    (-10, -100, "a", 0.7, 2000, 10000)
+                ),
+                (
+                    # Transcript
+                    ["1", "25900101", "25906466", "ENST00000455785", "0", "-", "25901015", "25904676", "0", "5", "986,192,173,75,78,", "0,1389,3539,4562,6287,"],
+                    # Tuple of tuples (txCoord, GenomeCoord)
+                    ((0, 25906465), (465, 25901542), (1503, 25900101)),
+                    # Tuple of txCoord that should throw exception
+                    (-10, -100, "a", 0.7, 1504, 10000)
+                )
+            ]
+
     def test_promoter100(self):
         '''promoters() should return correct promoters100 with known input'''
         for ((bed), (prom)) in self.known_promoters100:
@@ -246,5 +273,16 @@ class KnownValues(unittest.TestCase):
                 self.assertEqual(res, genomeCoord)
             for be in broken_examples:
                 self.assertRaises(bedparse.BEDexception, tx.tx2genome, be)
+
+    def test_tx2genome_stranded(self):
+        '''tx2genome should return corred coordinates for known cases'''
+        for tx, examples, broken_examples in self.known_tx2genome_stranded:
+            tx = bedparse.bedline(tx)
+            for (txCoord, genomeCoord) in examples:
+                res=tx.tx2genome(txCoord, stranded=True)
+                self.assertEqual(res, genomeCoord)
+            tx2genome_stranded = lambda x : tx.tx2genome(x, stranded=True)
+            for be in broken_examples:
+                self.assertRaises(bedparse.BEDexception, tx2genome_stranded, be)
 if __name__ == '__main__':
     unittest.main()

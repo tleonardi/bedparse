@@ -65,6 +65,7 @@ def bed12tobed6(args):
 
 def filter(args):
     col=args.column-1
+    inverse=args.inverse
     filterset=set()
     try:
         annotation=open(args.annotation)
@@ -76,7 +77,9 @@ def filter(args):
     annotation.close()
     with args.bedfile as tsvfile:
         for line in tsvfile:
-            if(line.split('\t')[3] in filterset):
+            if(line.split('\t')[3] in filterset and not inverse):
+                print(line.rstrip())
+            elif(line.split('\t')[3] not in filterset and inverse):
                 print(line.rstrip())
     tsvfile.close()
 
@@ -120,6 +123,22 @@ def convertChr(args):
                translatedLine.print()
     tsvfile.close()
 
+def validateFormat(args):
+    with args.bedfile as tsvfile:
+        for n,line in enumerate(tsvfile):
+            if args.fixSeparators:
+                line=re.sub(r'^\s+', '', line)
+                line=re.sub(r'\s+', '\t', line)
+                line=re.sub(r'\s+$', '', line)
+            try:
+                validatedLine=bedline(line.split('\t'))
+            except BEDexception as formatException:
+                raise BEDexception("\nThis doesn't appear to be a valid BED file. There was an error at line %s:\n\t\"%s\"" %(n+1, formatException))
+                tsvfile.close()
+            else:
+                validatedLine.print()
+    tsvfile.close()
+
 def main(args=None):
     desc_threep="Report the 3'UTR of each coding transcript (i.e. transcripts with distinct values of thickStart and thickEnd). Transcripts without CDS are not reported."
     desc_fivep="Report the 5'UTR of each coding transcript (i.e. transcripts with distinct values of thickStart and thickEnd). Transcripts without CDS are not reported."
@@ -138,6 +157,7 @@ def main(args=None):
                        are not converted (because the UCSC genome browser does not support them), but can be enabled using the -p flag.
                        When the BED file contains a chromosome that is not recognised, by default the program stops and throws an error. Alternatively,
                        unrecognised chromosomes can be suppressed (-s) or artificially set to 'NA' (-a)."""
+    desc_validateFormat="Checks whether the BED file provided adheres to the BED format specifications. Optionally, it can fix field speration errors."
     if args is None:
         args = sys.argv[1:]
 
@@ -176,6 +196,7 @@ def main(args=None):
             help="Filters a BED file based on an annotation.", description=desc_filter)
     parser_filter.add_argument("--annotation", "-a", type=str, help="Path to the annotation file.", required=True)
     parser_filter.add_argument("--column","-c",type=int, default=1, help="Column of the annotation file (1-based, default=1).")
+    parser_filter.add_argument("--inverse", "-v" ,action="store_true", help="Only report BED entries absent from the annotation file.")
     parser_filter.set_defaults(func=filter)
     parser_filter.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin,
     help="Path to the BED file.")
@@ -217,6 +238,11 @@ def main(args=None):
     parser_convertChr.add_argument("--suppressMissing", "-s" ,action="store_true", help="""When a chromosome name can't be matched between USCS and Ensembl do not report it in the output (by default throws an error).""")
     parser_convertChr.add_argument("--patches", "-p" ,action="store_true", help="""Allows conversion of all patches up to p11 for hg38 and p4 for mm10. Without this option, if the BED file contains contigs added by a patch the conversion terminates with an error (unless the -a or -s flags are present).""")
     parser_convertChr.set_defaults(func=convertChr)
+    
+    parser_validateFormat = subparsers.add_parser('validateFormat', help="Check whether the BED file adheres to the BED format specifications", description=desc_validateFormat)
+    parser_validateFormat.add_argument("bedfile", type=argparse.FileType('r'), nargs='?', default=sys.stdin, help="Path to the BED file.")
+    parser_validateFormat.add_argument("--fixSeparators", "-f" ,action="store_true", help="""If the fields are separated by multiple spaces (e.g. when copy-pasting BED files), replace them into tabs.""")
+    parser_validateFormat.set_defaults(func=validateFormat)
  
     args = parser.parse_args()
     args.func(args)

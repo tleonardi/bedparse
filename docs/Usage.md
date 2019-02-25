@@ -1,14 +1,13 @@
 ## Usage
 ```text
-> bedparse --help
 usage: bedparse [-h] [--version]
-                {3pUTR,5pUTR,cds,promoter,introns,filter,join,gtf2bed,bed12tobed6,convertChr}
+                {3pUTR,5pUTR,cds,promoter,introns,filter,join,gtf2bed,bed12tobed6,convertChr,validateFormat}
                 ...
 
 Perform various simple operations on BED files.
 
 positional arguments:
-  {3pUTR,5pUTR,cds,promoter,introns,filter,join,gtf2bed,bed12tobed6,convertChr}
+  {3pUTR,5pUTR,cds,promoter,introns,filter,join,gtf2bed,bed12tobed6,convertChr,validateFormat}
                         sub-command help
     3pUTR               Prints the 3' of coding genes.
     5pUTR               Prints the 5' of coding genes.
@@ -23,6 +22,8 @@ positional arguments:
     bed12tobed6         Converts a BED12 file to BED6 format
     convertChr          Convert chromosome names between UCSC and Ensembl
                         formats
+    validateFormat      Check whether the BED file adheres to the BED format
+                        specifications
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -163,14 +164,14 @@ Filters a BED file based on an annotation file. BED entries with a name (i.e. co
 #### Usage
 
 ```text
-> bedparse join --help
-usage: bedparse join [-h] --annotation ANNOTATION [--column COLUMN]
-                     [--separator SEPARATOR] [--empty EMPTY] [--noUnmatched]
-                     [bedfile]
+> bedparse filter --help
+usage: bedparse filter [-h] --annotation ANNOTATION [--column COLUMN]
+                       [--inverse]
+                       [bedfile]
 
-Adds the content of an annotation file to a BED file as extra columns. The two
-files are joined by matching the BED Name field (column 4) with a user-
-specified field of the annotation file.
+Filters a BED file based on an annotation. BED entries with a name (i.e. col4)
+that appears in the specified column of the annotation are printed to stdout.
+For efficiency reasons this command doesn't perform BED validation.
 
 positional arguments:
   bedfile               Path to the BED file.
@@ -181,12 +182,8 @@ optional arguments:
                         Path to the annotation file.
   --column COLUMN, -c COLUMN
                         Column of the annotation file (1-based, default=1).
-  --separator SEPARATOR, -s SEPARATOR
-                        Field separator for the annotation file (default tab)
-  --empty EMPTY, -e EMPTY
-                        String to append to empty records (default '.').
-  --noUnmatched, -n     Do not print unmatched lines.
-
+  --inverse, -v         Only report BED entries absent from the annotation
+                        file.
 ```
 
 #### Examples
@@ -413,6 +410,47 @@ CHR_HSCHR22_3_CTG1	137191	137686	ENST00000630841.1	0	-
 KI270706.1	45985	46062	ENST00000611371.2	0	+
 MT	3229	3304	ENST00000386347.1	0	+
 ```
+
+---
+
+
+### Validate Format
+Simply performs format validation on the input BED file. If any line doesn't adhere to the BED specifications the program reports an error and terminates.
+The `--fixSeparators` flag replaces fields separated by spaces into fields separated by a single tab. This is useful when writing a BED file by hand or when copy-pasting from a website.
+
+#### Usage
+```text
+usage: bedparse validateFormat [-h] [--fixSeparators] [bedfile]
+
+Checks whether the BED file provided adheres to the BED format specifications.
+Optionally, it can fix field speration errors.
+
+positional arguments:
+  bedfile              Path to the BED file.
+
+optional arguments:
+  -h, --help           show this help message and exit
+  --fixSeparators, -f  If the fields are separated by multiple spaces (e.g.
+                       when copy-pasting BED files), replace them into tabs.
+```
+
+#### Examples
+```text
+
+> cat example.bed 
+   chr1  a213941196  213942363
+  chr1  213942363  213943530
+chr1  213943530         213944697
+
+> bedparse validateFormat -f example.bed 
+chr1    213941196       213942363
+chr1    213942363       213943530
+chr1    213943530       213944697
+
+```
+
+
+
 
 ## Implementations notes 
 Internally, bedparse processes a bedfile line by line by instantiating objects of the bedline class. The bedline class implements an init() method that performs several checks on each field in order to ensure the correctness of the format, whereas the other methods of the class implement all the bedparse operations (see functionality).

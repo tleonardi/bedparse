@@ -9,6 +9,7 @@ Bedparse is a simple python module and CLI tool to perform common operations on 
 
 It offers the following functionality:
 
+* BED format validation
 * Filtering of transcripts based on annotations
 * Joining of annotation files based on transcript names
 * Conversion from GTF to BED format
@@ -29,7 +30,7 @@ Contents
    Installation
    Motivation
    Usage
-
+   Tutorial
 
 
 
