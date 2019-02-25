@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/tleonardi/bedparse.svg?branch=devel)](https://travis-ci.org/tleonardi/bedparse)
+[![Build Status](https://travis-ci.org/tleonardi/bedparse.svg?branch=master)](https://travis-ci.org/tleonardi/bedparse)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
  
 # Bedparse
@@ -26,8 +26,8 @@ pip install bedparse
 
 ## Documentation
 
-Our documentation is hosted on [Read the Docs](https://bedparse.readthedocs.io/en/devel/).
+Our documentation is hosted on [Read the Docs](https://bedparse.readthedocs.io/en/master/).
 
-We also have a short [tutorial](https://bedparse.readthedocs.io/en/devel/Tutorial.html) to guide you through the basic functions.
+We also have a short [tutorial](https://bedparse.readthedocs.io/en/master/Tutorial.html) to guide you through the basic functions.
 
 
