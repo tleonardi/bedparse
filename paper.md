@@ -19,7 +19,7 @@ bibliography: paper.bib
 ---
 
 # Summary
-``Bedparse`` is a Python module and command-line interface tool to extract features from genome-annotation files in BED (Browser Extensible Data) format.
+``Bedparse`` is a Python module and command-line interface tool to extract features from genome annotation files in BED (Browser Extensible Data) format.
 The BED format is a plaintext file format commonly used in bioinformatics to represent genomic features. Each line in a BED file corresponds to a genomic feature (e.g. a gene, transcript, peak, regulatory region, etc.) and consists of up to 12 tab-separated fields that define its genomic coordinates and exon-intron structure. This format is also commonly used to graphically visualise genomic features by genome browser software and is one of the standard formats used by the UCSC [@ucsc2002] and Ensembl [@ensembl2018] genome browsers. 
 One of the major advantages of the BED format over many of its alternatives is that each line includes all the information required to define an individual gene/transcript model. This makes the format particulary convenient when used with Unix pipes, ``awk`` one-liners or small custom scripts. This ad hoc approach, albeit (usually) simple and effective, often leads to repetition and/or code duplication and can be prone to errors, bugs and typos that are not always easy to detect.
 
