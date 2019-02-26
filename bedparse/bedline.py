@@ -123,14 +123,18 @@ class bedline(object):
     def promoter(self, up=500, down=500, strand=True):
         """ Returns the promoter of a bedline object
 
-        :param up: Number of upstream bases
-        :param down: Number of donwstream bases
-        :param strand: If false strandedness is ignored 
-        :type up: int
-        :type down: int
-        :type strand: bool
-        :returns: bedline
+        Args:
+            up (int): Number of upstream bases
+            down (int): Number of donwstream bases
+            strand (bool): If false strandedness is ignored 
+        Returns:
+            bedline: The promoter as a bedline object
+        Examples:
+	    >>> bl = bedline(['chr1', 1000, 2000, 'Tx1', '0', '+'])
+            >>> print(bl.promoter())
+            ['chr1', 500, 1500, 'Tx1']
         """
+
         if strand and self.bedType<6:
             raise BEDexception("You requested stranded promoters, but the BED file appears to be unstranded")
         if not strand or self.strand=="+":
@@ -146,9 +150,15 @@ class bedline(object):
     def utr(self, which=None):
         """ Returns the UTR of coding transcripts (i.e. those with a CDS) 
         
-        :param which: Which UTR to return: 3 for 3'UTR or 5 for 5' UTR
-        :type which: int
-        :returns: bedline
+	Args:
+	    which (int): Which UTR to return: 3 for 3'UTR or 5 for 5' UTR
+        Returns:
+	    bedline: The UTR as a bedline object
+	Examples:
+	    >>> bl = bedline(["chr1", 100, 500, "Tx1", 0, "+", 200, 300, ".", 1, "400,", "0,"])
+            >>> print(bl.utr(which=5))
+            ['chr1', 100, 200, 'Tx1', 0, '+', 100, 100, '.', 1, '100,', '0,']
+
         """
         if(not self.stranded):
             raise BEDexception("UTRs for an unstranded transcript make little sense: "+self.name)
@@ -247,10 +257,15 @@ class bedline(object):
 
     def cds(self, ignoreCDSonly=False):
         """Return the CDS of a coding transcript. Transcripts without CDS are not reported
-
-        :param ignoreCDSonly: If True return None when the entire transcript is CDS 
-        :type ignoreCDSonly: bool
-        :returns: bedline
+	
+	Args:
+            ignoreCDSonly (bool): If True return None when the entire transcript is CDS 
+	Returns:
+	    bedline: The CDS as a bedline object
+	Examples:
+	    >>> bl = bedline(["chr1", 100, 500, "Tx1", 0, "+", 200, 300, ".", 1, "400,", "0,"])
+            >>> print(bl.cds())
+            ['chr1', 200, 300, 'Tx1', 0, '+', 200, 300, '.', 1, '100,', '0,']
         """
         if(not self.stranded):
             raise BEDexception("CDS for an unstranded transcript makes little sense: "+self.name)
@@ -310,7 +325,15 @@ class bedline(object):
     def introns(self):
         """ Returns a bedline object of the introns of a transcript
         
-        :returns: bedline
+        Returns:
+	    bedline: The introns of the transcripts as a bedline object
+	Examples:
+	    >>> bl = bedline(["chr1", 100, 420, "Name", 0, "+", 210, 310, ".", 4, "20,20,20,20,", "0,100,200,300,"])
+            >>> print(bl.introns())
+            ['chr1', 120, 400, 'Name', 0, '+', 120, 120, '.', 3, '80,80,80,', '0,100,200,']
+            >>> bl = bedline(["chr1", 100, 420, "Name", 0, "-", 210, 310, ".", 1, "320,", "0,"])
+            >>> print(bl.introns())
+            None
         """
         if(self.bedType<12 or self.nEx<2): return None
 
@@ -335,12 +358,18 @@ class bedline(object):
         """ Given a position in transcript coordinates returns the equivalent in genome coordinates.
             The transcript coordinates are considered without regard to strand, i.e. 0 is the leftmost
             position for both + and - strand transcripts, unless the stranded options is set to True.
-            
-            :param coord: Coordinate to convert from transcript-space to genome space
-            :param stranded: If True use the rightmost base of negative strand trascripts as 0
-            :type coord: int
-            :type stranded: bool
-            :returns: int
+
+            Args:
+                coord (int): Coordinate to convert from transcript-space to genome space
+                stranded (bool): If True use the rightmost base of negative strand trascripts as 0
+            Returns:
+		int: Coordinate in genome-space
+	    Examples:
+		>>> bl = bedline(['chr1', 1000, 2000, 'Tx1', '0', '-'])
+                >>> bl.tx2genome(10)
+                1010
+                >>> bl.tx2genome(10, stranded=True)
+                1989
             """
 
         if not isinstance(coord, int):
@@ -384,12 +413,20 @@ class bedline(object):
 
     def bed12tobed6(self, appendExN=False, whichExon="all"):
         """ Returns a list of bedlines (bed6) corresponding to the exons.
-        
-        :param appendExN: Appends the exon number to the transcript name
-        :param whichExon: Which exon to return. One of ["all", "first", "last"]. First and last respectively report the first or last exon relative to the TSS (i.e. taking strand into account).
-        :type appendExN: bool
-        :type whichExon: str
-        :returns: list of bedline objects
+
+       	    Args:
+        	appendExN (bool): Appends the exon number to the transcript name
+        	whichExon (str): Which exon to return. One of ["all", "first", "last"]. First and last respectively report the first or last exon relative to the TSS (i.e. taking strand into account).
+            Returns:
+		list: list of bedline objects, one per exon
+	    Examples:
+		>>> bl = bedline(["chr1", 100, 420, "Name", 0, "+", 210, 310, ".", 4, "20,20,20,20,", "0,100,200,300,"])
+                >>> for i in bl.bed12tobed6(appendExN=True): print(i)
+                ... 
+                ['chr1', 100, 120, 'Name_Exon001', 0, '+']
+                ['chr1', 200, 220, 'Name_Exon002', 0, '+']
+                ['chr1', 300, 320, 'Name_Exon003', 0, '+']
+                ['chr1', 400, 420, 'Name_Exon004', 0, '+']
         """
         if(self.bedType!=12): raise BEDexception("Only BED12 lines can be coverted to BED6")
         if whichExon not in ("all", "first", "last"):
@@ -421,17 +458,21 @@ class bedline(object):
     def translateChr(self, assembly, target, suppress=False, ignore=False, patches=False):
         """ Convert the chromosome name to Ensembl or UCSC 
 
-            :param assembly: Assembly of the BED file (either hg38 or mm10).
-            :param target: Desidered chromosome name convention (ucsc or ens).
-            :param suppress: When a chromosome name can't be matched between USCS and Ensembl set it to 'NA' (by default throws as error)
-            :param ignore: When a chromosome name can't be matched between USCS and Ensembl do not report it in the output (by default throws an error)
-            :param patches: Allows conversion of all patches up to p11 for hg38 and p4 for mm10. Without this option, if the BED file contains contigs added by a patch the conversion terminates with an error (unless the -a or -s flags are present
-            :type assembly: str
-            :type target: str
-            :type suppress: bool
-            :type ignore: bool
-            :type patches: bool
-            :returns: bedline
+	    Args:
+                assembly (str): Assembly of the BED file (either hg38 or mm10).
+                target (str): Desidered chromosome name convention (ucsc or ens).
+                suppress (bool): When a chromosome name can't be matched between USCS and Ensembl set it to 'NA' (by default throws as error)
+                ignore (bool): When a chromosome name can't be matched between USCS and Ensembl do not report it in the output (by default throws an error)
+                patches (bool): Allows conversion of all patches up to p11 for hg38 and p4 for mm10. Without this option, if the BED file contains contigs added by a patch the conversion terminates with an error (unless the -a or -s flags are present
+            Returns:
+		bedline: A bedline object with the converted chromosome
+	    Examples:
+		>>> bl = bedline(['chr1', 1000, 2000, 'Tx1', '0', '-'])
+                >>> print(bl.translateChr(assembly="hg38", target="ens"))
+                ['1', 1000, 2000, 'Tx1', '0', '-']
+                >>> bl = bedline(['chr19_GL000209v2_alt', 1000, 2000, 'Tx1', '0', '-'])
+                >>> print(bl.translateChr(assembly="hg38", target="ens"))
+                ['CHR_HSCHR19KIR_RP5_B_HAP_CTG3_1', 1000, 2000, 'Tx1', '0', '-']
         """
 
         if(assembly not in ("hg38", "mm10")):
