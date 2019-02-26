@@ -82,7 +82,7 @@ def gtf2bed(gtf, extra=[''], filterKey="transcript_biotype", filterType=['']):
 	# Convert to bedline for format validation
         out=list()
         bed = bedline(transcripts[transcript])
-        for key in bed.fields[:bed.bedType]:
+        for key in bed._bedline__fields[:bed.bedType]:
             out.append(bed.__dict__[key])
         if(extra!=['']):
             for field in extra:

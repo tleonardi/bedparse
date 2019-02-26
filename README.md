@@ -1,6 +1,10 @@
-[![Build Status](https://travis-ci.org/tleonardi/bedparse.svg?branch=master)](https://travis-ci.org/tleonardi/bedparse)
-
+[![Build Status](https://travis-ci.org/tleonardi/bedparse.svg?branch=devel)](https://travis-ci.org/tleonardi/bedparse)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+ 
 # Bedparse
+
+![](docs/bedparse.svg)
+
 Bedparse is a simple python module and CLI tool to perform common operations on BED files.
 
 It offers the following functionality:
@@ -22,4 +26,8 @@ pip install bedparse
 
 ## Documentation
 
-[bedparse.rtfd.io](https://bedparse.readthedocs.io/en/latest/)
+Our documentation is hosted on [Read the Docs](https://bedparse.readthedocs.io/en/devel/).
+
+We also have a short [tutorial](https://bedparse.readthedocs.io/en/devel/Tutorial.html) to guide you through the basic functions.
+
+
