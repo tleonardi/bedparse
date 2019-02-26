@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.1] - 2019/02/25
+
+### Added
+- Added supporto for strandedness in tx2genome()
+
+### Fixed
+- Fixed bug in tx2genome() strand handling
+
 ## [0.2.0] - 2019/01/19
 
 ### Fixed
