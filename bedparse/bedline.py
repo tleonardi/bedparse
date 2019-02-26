@@ -418,18 +418,18 @@ class bedline(object):
             elif self.strand == "-":
                 return([exons[0]])
 
-    def translateChr(self, assembly, target, suppress=False, all=False, patches=False):
+    def translateChr(self, assembly, target, suppress=False, ignore=False, patches=False):
         """ Convert the chromosome name to Ensembl or UCSC 
 
             :param assembly: Assembly of the BED file (either hg38 or mm10).
             :param target: Desidered chromosome name convention (ucsc or ens).
-            :param suppress: When a chromosome name can't be matched between USCS and Ensembl set it to 'NA' (by default thrown as error)
-            :param all: When a chromosome name can't be matched between USCS and Ensembl do not report it in the output (by default throws an error)
+            :param suppress: When a chromosome name can't be matched between USCS and Ensembl set it to 'NA' (by default throws as error)
+            :param ignore: When a chromosome name can't be matched between USCS and Ensembl do not report it in the output (by default throws an error)
             :param patches: Allows conversion of all patches up to p11 for hg38 and p4 for mm10. Without this option, if the BED file contains contigs added by a patch the conversion terminates with an error (unless the -a or -s flags are present
             :type assembly: str
             :type target: str
             :type suppress: bool
-            :type all: bool
+            :type ignore: bool
             :type patches: bool
             :returns: bedline
         """
@@ -438,7 +438,7 @@ class bedline(object):
             raise BEDexception("The specified assembly is not supported")
         if(target not in ("ucsc", "ens")):
             raise BEDexception("The specified target naming convention is not supported")
-        if(all and suppress):
+        if(ignore and suppress):
             raise BEDexception("Only one of allowMissing and suppressMissing is allowed")
 
         if(assembly=="hg38" and target=="ucsc"):
@@ -460,7 +460,7 @@ class bedline(object):
         
         if(self.chr in convDict.keys()):
                 self.chr=convDict[self.chr]
-        elif(all):
+        elif(ignore):
             self.chr="NA"
         elif(suppress):
             return None

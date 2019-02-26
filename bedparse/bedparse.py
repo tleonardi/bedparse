@@ -118,7 +118,7 @@ def join(args):
 def convertChr(args):
     with args.bedfile as tsvfile:
         for line in tsvfile:
-            translatedLine=bedline(line.split('\t')).translateChr(assembly=args.assembly, target=args.target, suppress=args.suppressMissing, all=args.allowMissing, patches=args.patches)
+            translatedLine=bedline(line.split('\t')).translateChr(assembly=args.assembly, target=args.target, suppress=args.suppressMissing, ignore=args.allowMissing, patches=args.patches)
             if(translatedLine):
                translatedLine.print()
     tsvfile.close()
