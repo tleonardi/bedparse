@@ -1,9 +1,17 @@
 # Changelog
 
+## [0.2.2] - 2019/02/27
+
+### Added
+- Better documentation and examples of API methods
+
+### Fixed
+- Fixed shadowing of built-in `all` function by translateChr()
+
 ## [0.2.1] - 2019/02/25
 
 ### Added
-- Added supporto for strandedness in tx2genome()
+- Added support for strandedness in tx2genome()
 
 ### Fixed
 - Fixed bug in tx2genome() strand handling
