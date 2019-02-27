@@ -30,11 +30,11 @@ optional arguments:
   --version, -v         show program's version number and exit
 ```
 
-The basic syntax in the form: `bedparse subcommand [parameters]`.
+The basic syntax in the form: `bedparse sub-command [parameters]`.
 
-For a list of all subcommands and a brief explanation of what they do, use: `bedparse --help`
+For a list of all sub-commands and a brief explanation of what they do, use: `bedparse --help`
 
-For a detailed explanation of each subcommand and a list of its paramters, use the `--help` options after the subcommand's name, e.g.: `bedparse promoter --help`
+For a detailed explanation of each subcommand and a list of its parameters, use the `--help` option after the subcommand's name, e.g.: `bedparse promoter --help`
 
 ---
 

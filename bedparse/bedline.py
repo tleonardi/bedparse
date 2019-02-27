@@ -3,9 +3,14 @@ from bedparse import BEDexception
 from bedparse import chrnames
 
 class bedline(object):
-    """An object to represent a BED 12 line"""
-    fields = ("chr", "start", "end", "name", "score", "strand", "cdsStart", "cdsEnd", "color", "nEx", "exLengths", "exStarts")
+    """The bedline class defines an object that represents a single BED[3,4,6,12] line
+    """
+    __fields = ("chr", "start", "end", "name", "score", "strand", "cdsStart", "cdsEnd", "color", "nEx", "exLengths", "exStarts")
     def __init__(self, line=None):
+        """
+        :param line: List where each element corresponds to one field of a BED file
+        :type line: list
+        """
         if(line is None):
             return None
         elif(type(line) is not list):
@@ -18,7 +23,7 @@ class bedline(object):
 
         self.bedType=len(line)
         for n in range(self.bedType):
-           self.__dict__[self.fields[n]] = line[n]
+           self.__dict__[self.__fields[n]] = line[n]
       
         # If the file format is bed3 set the name to "NoName"
         if(self.bedType<4):
@@ -88,29 +93,48 @@ class bedline(object):
 
     def __str__(self):
         out=[]
-        for key in self.fields[:self.bedType]:
+        for key in self.__fields[:self.bedType]:
             out.append(self.__dict__[key])
         return str(out)
 
     def print(self, end='\n'):
+        """Prints a bedline object
+
+        :param end: Line terminator character
+        """
         out=[]
-        for key in self.fields[:self.bedType]:
+        for key in self.__fields[:self.bedType]:
             out.append(self.__dict__[key])
         return print(*out, sep="\t", end=end)
 
     def pprint(self):
+        """Prints a bedline object formatted as a python list
+        """
         import pprint
         pp = pprint.PrettyPrinter(indent=4)
         out=[]
-        for key in self.fields[:self.bedType]:
+        for key in self.__fields[:self.bedType]:
             out.append(self.__dict__[key])
         return pp.pprint(out)
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
-    def promoter(self, up=500, down=500, strand=1):
-        """ Returns a bedline of the promoters"""
+    def promoter(self, up=500, down=500, strand=True):
+        """ Returns the promoter of a bedline object
+
+        Args:
+            up (int): Number of upstream bases
+            down (int): Number of donwstream bases
+            strand (bool): If false strandedness is ignored 
+        Returns:
+            bedline: The promoter as a bedline object
+        Examples:
+	    >>> bl = bedline(['chr1', 1000, 2000, 'Tx1', '0', '+'])
+            >>> print(bl.promoter())
+            ['chr1', 500, 1500, 'Tx1']
+        """
+
         if strand and self.bedType<6:
             raise BEDexception("You requested stranded promoters, but the BED file appears to be unstranded")
         if not strand or self.strand=="+":
@@ -124,7 +148,18 @@ class bedline(object):
         return bedline([self.chr, start, end, self.name])
 
     def utr(self, which=None):
-        """ Returns the 5p UTR of coding transcripts (i.e. those with a CDS) """
+        """ Returns the UTR of coding transcripts (i.e. those with a CDS) 
+        
+	Args:
+	    which (int): Which UTR to return: 3 for 3'UTR or 5 for 5' UTR
+        Returns:
+	    bedline: The UTR as a bedline object
+	Examples:
+	    >>> bl = bedline(["chr1", 100, 500, "Tx1", 0, "+", 200, 300, ".", 1, "400,", "0,"])
+            >>> print(bl.utr(which=5))
+            ['chr1', 100, 200, 'Tx1', 0, '+', 100, 100, '.', 1, '100,', '0,']
+
+        """
         if(not self.stranded):
             raise BEDexception("UTRs for an unstranded transcript make little sense: "+self.name)
         if(which!=5 and which!=3):
@@ -221,7 +256,17 @@ class bedline(object):
 
 
     def cds(self, ignoreCDSonly=False):
-        """Return the CDS of a coding transcript. Transcripts that are only CDS are NOT reported."""
+        """Return the CDS of a coding transcript. Transcripts without CDS are not reported
+	
+	Args:
+            ignoreCDSonly (bool): If True return None when the entire transcript is CDS 
+	Returns:
+	    bedline: The CDS as a bedline object
+	Examples:
+	    >>> bl = bedline(["chr1", 100, 500, "Tx1", 0, "+", 200, 300, ".", 1, "400,", "0,"])
+            >>> print(bl.cds())
+            ['chr1', 200, 300, 'Tx1', 0, '+', 200, 300, '.', 1, '100,', '0,']
+        """
         if(not self.stranded):
             raise BEDexception("CDS for an unstranded transcript makes little sense: "+self.name)
 
@@ -278,7 +323,18 @@ class bedline(object):
         return result
 
     def introns(self):
-        """ Returns the introns of a transcript """
+        """ Returns a bedline object of the introns of a transcript
+        
+        Returns:
+	    bedline: The introns of the transcripts as a bedline object
+	Examples:
+	    >>> bl = bedline(["chr1", 100, 420, "Name", 0, "+", 210, 310, ".", 4, "20,20,20,20,", "0,100,200,300,"])
+            >>> print(bl.introns())
+            ['chr1', 120, 400, 'Name', 0, '+', 120, 120, '.', 3, '80,80,80,', '0,100,200,']
+            >>> bl = bedline(["chr1", 100, 420, "Name", 0, "-", 210, 310, ".", 1, "320,", "0,"])
+            >>> print(bl.introns())
+            None
+        """
         if(self.bedType<12 or self.nEx<2): return None
 
         exStarts=self.exStarts.split(',')
@@ -301,7 +357,20 @@ class bedline(object):
     def tx2genome(self, coord, stranded=False):
         """ Given a position in transcript coordinates returns the equivalent in genome coordinates.
             The transcript coordinates are considered without regard to strand, i.e. 0 is the leftmost
-            position for both + and - strand transcripts."""
+            position for both + and - strand transcripts, unless the stranded options is set to True.
+
+            Args:
+                coord (int): Coordinate to convert from transcript-space to genome space
+                stranded (bool): If True use the rightmost base of negative strand trascripts as 0
+            Returns:
+		int: Coordinate in genome-space
+	    Examples:
+		>>> bl = bedline(['chr1', 1000, 2000, 'Tx1', '0', '-'])
+                >>> bl.tx2genome(10)
+                1010
+                >>> bl.tx2genome(10, stranded=True)
+                1989
+            """
 
         if not isinstance(coord, int):
             raise BEDexception("coord must be of type integer")
@@ -343,7 +412,22 @@ class bedline(object):
 
 
     def bed12tobed6(self, appendExN=False, whichExon="all"):
-        """ Returns a list of bedlines (bed6) corresponding to the exons."""
+        """ Returns a list of bedlines (bed6) corresponding to the exons.
+
+       	    Args:
+        	appendExN (bool): Appends the exon number to the transcript name
+        	whichExon (str): Which exon to return. One of ["all", "first", "last"]. First and last respectively report the first or last exon relative to the TSS (i.e. taking strand into account).
+            Returns:
+		list: list of bedline objects, one per exon
+	    Examples:
+		>>> bl = bedline(["chr1", 100, 420, "Name", 0, "+", 210, 310, ".", 4, "20,20,20,20,", "0,100,200,300,"])
+                >>> for i in bl.bed12tobed6(appendExN=True): print(i)
+                ... 
+                ['chr1', 100, 120, 'Name_Exon001', 0, '+']
+                ['chr1', 200, 220, 'Name_Exon002', 0, '+']
+                ['chr1', 300, 320, 'Name_Exon003', 0, '+']
+                ['chr1', 400, 420, 'Name_Exon004', 0, '+']
+        """
         if(self.bedType!=12): raise BEDexception("Only BED12 lines can be coverted to BED6")
         if whichExon not in ("all", "first", "last"):
             raise BEDexception("whichExon has to be one of [all, first, last]")
@@ -371,14 +455,31 @@ class bedline(object):
             elif self.strand == "-":
                 return([exons[0]])
 
-    def translateChr(self, assembly, target, suppress=False, all=False, patches=False):
-        """ Convert the chromosome name to Ensembl or UCSC """
+    def translateChr(self, assembly, target, suppress=False, ignore=False, patches=False):
+        """ Convert the chromosome name to Ensembl or UCSC 
+
+	    Args:
+                assembly (str): Assembly of the BED file (either hg38 or mm10).
+                target (str): Desidered chromosome name convention (ucsc or ens).
+                suppress (bool): When a chromosome name can't be matched between USCS and Ensembl set it to 'NA' (by default throws as error)
+                ignore (bool): When a chromosome name can't be matched between USCS and Ensembl do not report it in the output (by default throws an error)
+                patches (bool): Allows conversion of all patches up to p11 for hg38 and p4 for mm10. Without this option, if the BED file contains contigs added by a patch the conversion terminates with an error (unless the -a or -s flags are present
+            Returns:
+		bedline: A bedline object with the converted chromosome
+	    Examples:
+		>>> bl = bedline(['chr1', 1000, 2000, 'Tx1', '0', '-'])
+                >>> print(bl.translateChr(assembly="hg38", target="ens"))
+                ['1', 1000, 2000, 'Tx1', '0', '-']
+                >>> bl = bedline(['chr19_GL000209v2_alt', 1000, 2000, 'Tx1', '0', '-'])
+                >>> print(bl.translateChr(assembly="hg38", target="ens"))
+                ['CHR_HSCHR19KIR_RP5_B_HAP_CTG3_1', 1000, 2000, 'Tx1', '0', '-']
+        """
 
         if(assembly not in ("hg38", "mm10")):
             raise BEDexception("The specified assembly is not supported")
         if(target not in ("ucsc", "ens")):
             raise BEDexception("The specified target naming convention is not supported")
-        if(all and suppress):
+        if(ignore and suppress):
             raise BEDexception("Only one of allowMissing and suppressMissing is allowed")
 
         if(assembly=="hg38" and target=="ucsc"):
@@ -400,7 +501,7 @@ class bedline(object):
         
         if(self.chr in convDict.keys()):
                 self.chr=convDict[self.chr]
-        elif(all):
+        elif(ignore):
             self.chr="NA"
         elif(suppress):
             return None

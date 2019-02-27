@@ -124,3 +124,32 @@ chr1    943907  944575  ENST00000342066.7_Exon014       0       +
 ```
 
 The optional flag --appendExN adds ExonNNN to the end of each transcript name.
+
+## APIs
+
+Bedparse can also be imported as a python module. The API documentation contains detailed information of the bedline class and its methods. The following is simple example of how to use it:
+
+```
+In [1]: from bedparse import bedline
+
+In [2]: l = bedline(['chr1', 1000, 2000, 'Tx1', '0', '+'])
+
+In [3]: prom = l.promoter()
+
+In [4]: prom.print()
+chr1    500     1500    Tx1
+
+In [5]: prom.pprint()
+['chr1', 500, 1500, 'Tx1']
+
+In [6]: ens_prom = prom.translateChr(assembly="hg38", target="ens")
+
+In [7]: ens_prom.print()
+1       500     1500    Tx1
+
+```
+
+
+
+
+
