@@ -15,15 +15,13 @@ setup(name='bedparse',
       classifiers=[
           'Development Status :: 5 - Production/Stable',
           'License :: OSI Approved :: MIT License',
-          'Programming Language :: Python :: 3.2',
-          'Programming Language :: Python :: 3.3',
           'Programming Language :: Python :: 3.4',
           'Programming Language :: Python :: 3.5',
           'Programming Language :: Python :: 3.6'
       ],
       packages=['bedparse'],
       install_requires=['argparse', 'setuptools'],
-      python_requires='>=3',
+      python_requires='>=3.4',
       entry_points={
           'console_scripts': [
               'bedparse = bedparse.bedparse:main'
