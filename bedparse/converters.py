@@ -83,6 +83,8 @@ def gtf2bed(gtf, extra=[''], filterKey="transcript_biotype", filterType=['']):
         out=list()
         bed = bedline(transcripts[transcript])
         for key in bed._bedline__fields[:bed.bedType]:
+            if key=="exLengths": bed.exLengths+=","
+            if key=="exStarts": bed.exStarts+=","
             out.append(bed.__dict__[key])
         if(extra!=['']):
             for field in extra:
