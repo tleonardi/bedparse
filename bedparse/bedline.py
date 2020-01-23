@@ -40,7 +40,7 @@ class bedline(object):
         except:
             raise BEDexception("Start or End are not an int for transcript "+self.name)
         if(self.start>self.end):
-            raise BEDexception("start is greater than End for transcript "+self.name)
+            raise BEDexception("Start is greater than End for transcript "+self.name)
       
         #Validate the strand and set stranded property
         if(self.bedType>=6):
