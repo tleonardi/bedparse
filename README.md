@@ -43,3 +43,10 @@ Our documentation is hosted on [Read the Docs](https://bedparse.readthedocs.io/e
 
 We also have a short [tutorial](https://bedparse.readthedocs.io/en/devel/Tutorial.html) to guide you through the basic functions.
 
+
+## Publications
+
+If you use bedparse please cite the following [paper](https://joss.theoj.org/papers/10.21105/joss.01228):
+
+_Leonardi, (2019). Bedparse: feature extraction from BED files. Journal of Open Source Software, 4(34), 1228, https://doi.org/10.21105/joss.01228_
+
