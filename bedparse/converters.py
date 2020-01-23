@@ -3,7 +3,7 @@ import csv
 import re
 from bedparse import bedline
 
-def gtf2bed(gtf, extra=[''], filterKey="transcript_biotype", filterType=['']):
+def gtf2bed(gtf, extra=[''], filterKey="transcript_biotype", filterType=[''], transcript_feature_name= "transcript"):
     gtfRecords={'exon':list(), 'transcript': list(), 'cds':list()}
     transcripts=dict()
     exons=dict()
@@ -12,8 +12,8 @@ def gtf2bed(gtf, extra=[''], filterKey="transcript_biotype", filterType=['']):
     gtfReader = csv.reader((row for row in gtf if not row.startswith('#')), delimiter="\t")
     for line in gtfReader:
         # Store all transcript lines
-        if(line[2]=='transcript'):
-            txName=re.sub('.+transcript_id "([^"]+)";.+', "\\1", line[8])
+        if(line[2]== transcript_feature_name):
+            txName=re.sub('.*transcript_id "([^"]+)";.*', "\\1", line[8])
             if(line[6]!="+" and line[6]!="-"):
                 raise BEDexception("Transcript with unrecognized strand: "+txName)
             # Start-1 converts from 1-based to 0-based
@@ -30,7 +30,7 @@ def gtf2bed(gtf, extra=[''], filterKey="transcript_biotype", filterType=['']):
                 if(extrainfo[txName][filterKey] == line[8]): extrainfo[txName][field] = "."
         # Parse exon lines
         if(line[2]=='exon'):
-            txName=re.sub('.+transcript_id "([^"]+)";.+', "\\1", line[8])
+            txName=re.sub('.*transcript_id "([^"]+)";.*', "\\1", line[8])
             if(line[6]!=transcripts[txName][5]):
                 raise BEDexception("Exon has different strand from parent transcript: "+txName)
             start=int(line[3])-1
@@ -40,7 +40,7 @@ def gtf2bed(gtf, extra=[''], filterKey="transcript_biotype", filterType=['']):
         # Start CDS, start and stop codons
         # Any of these features extends the CDS
         if(line[2] in ['CDS', 'start_codon', 'stop_codon']):
-            txName=re.sub('.+transcript_id "([^"]+)";.+', "\\1", line[8])
+            txName=re.sub('.*transcript_id "([^"]+)";.*', "\\1", line[8])
             if(line[6]!=transcripts[txName][5]):
                 raise BEDexception(("%s has different strand from parent transcript: %s" % line[2], txName))
             start=int(line[3])

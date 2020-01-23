@@ -149,8 +149,9 @@ def main(args=None):
                    printed to stdout. For efficiency reasons this command doesn't perform BED validation."""
     desc_join="""Adds the content of an annotation file to a BED file as extra columns. The two files are joined by matching the BED Name field (column 4) with
                  a user-specified field of the annotation file."""
-    desc_gtf2bed="""Converts a GTF file to BED12 format. This tool supports the Ensembl GTF format. The GTF file must contain 'transcript' and 'exon' 
-                    features in field 3. If the GTF file also annotates 'CDS' 'start_codon' or 'stop_codon' these are used to annotate the thickStart and thickEnd in the BED file."""
+    desc_gtf2bed="""Converts a GTF file to BED12 format. This tool supports the Ensembl GTF format. The GTF file normally contains the word 'transcript'
+                    in field 3.If not, it is possible to provide the feature name from the command line. If not provided, the default will be 'transcript'.
+                    If the GTF file also annotates 'CDS' 'start_codon' or 'stop_codon' these are used to annotate the thickStart and thickEnd in the BED file."""
     desc_bed12tobed6="Convert the BED12 format into BED6 by reporting a separate line for each block of the original record."
     desc_convertChr="""Convert chromosome names between UCSC and Ensembl formats.
                        The conversion supports the hg38 assembly up to patch 11 and the mm10 assembly up to patch 4. By default patches
@@ -220,7 +221,8 @@ def main(args=None):
     parser_gtf2bed.add_argument("--extraFields",type=str, default='', help="Comma separated list of extra GTF fields to be added after col 12 (e.g. gene_id,gene_name).")
     parser_gtf2bed.add_argument("--filterKey", type=str, default='transcript_biotype', help="GTF extra field on which to apply the filtering")
     parser_gtf2bed.add_argument("--filterType",type=str, default='', help="Comma separated list of filterKey field values to retain.")
-    parser_gtf2bed.set_defaults(func=lambda args: gtf2bed(args.gtf, extra=args.extraFields.split(','), filterKey=args.filterKey, filterType=args.filterType.split(',')))
+    parser_gtf2bed.add_argument("--transcript_feature_name",type=str, default='transcript', help="Transcript feature name if not 'transcript'")
+    parser_gtf2bed.set_defaults(func=lambda args: gtf2bed(args.gtf, extra=args.extraFields.split(','), filterKey=args.filterKey, filterType=args.filterType.split(','), transcript_feature_name=args.transcript_feature_name))
  
     parser_bed12tobed6 = subparsers.add_parser('bed12tobed6', 
             help="Converts a BED12 file to BED6 format", description=desc_bed12tobed6)
