@@ -3,7 +3,6 @@
 [![JOSS Status](http://joss.theoj.org/papers/22763a3b37fde13e548e884edd3221fa/status.svg)](http://joss.theoj.org/papers/22763a3b37fde13e548e884edd3221fa)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2578820.svg)](https://doi.org/10.5281/zenodo.2578820)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
-
 # Bedparse
 
 ![](docs/bedparse.svg)
@@ -43,4 +42,11 @@ For a detailed explanation of each subcommand and a list of its parameters, use 
 Our documentation is hosted on [Read the Docs](https://bedparse.readthedocs.io/en/latest/).
 
 We also have a short [tutorial](https://bedparse.readthedocs.io/en/latest/Tutorial.html) to guide you through the basic functions.
+
+
+## Publications
+
+If you use bedparse please cite the following [paper](https://joss.theoj.org/papers/10.21105/joss.01228):
+
+_Leonardi, (2019). Bedparse: feature extraction from BED files. Journal of Open Source Software, 4(34), 1228, https://doi.org/10.21105/joss.01228_
 

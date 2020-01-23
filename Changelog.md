@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.3] - 2020/01/20 
+
+### Added
+- Added support for BED files without comma terminator in fields 11 and 12 (@camillaugolini-iit)
+- Added --transcript_feature_name argument for gtf2bed (@camillaugolini-iit)
+
 ## [0.2.2] - 2019/02/27
 
 ### Added

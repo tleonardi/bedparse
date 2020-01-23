@@ -68,19 +68,21 @@ class bedline(object):
                 raise BEDexception("CDSstart is greater than CDSend for transcript "+self.name)
             if(self.cdsStart<self.start or self.cdsEnd>self.end):
                 raise BEDexception("The CDS range is bigger than the transcript for transcript "+self.name)
-            if(re.search(',$', self.exLengths) == None or re.search(',$', self.exStarts) == None ):
-                raise BEDexception("Exon lengths or starts do not end with ',' for transcript "+self.name)
-            # Check that number of blocks corresponds to the conent of fields 11 and 12
-            if(len(self.exLengths.split(","))-1!=self.nEx):
+            # Check that number of blocks corresponds to the content of fields 11 and 12
+            if(re.search(',$', self.exLengths) != None):
+                self.exLengths = re.sub(',$', '', self.exLengths)
+            if(re.search(',$', self.exStarts) != None):
+                self.exStarts = re.sub(',$', '', self.exStarts)
+            if(len(self.exLengths.split(","))!=self.nEx):
                 raise BEDexception("Exon lengths and number of exons mismatch for transcript "+self.name)
-            if(len(self.exStarts.split(","))-1!=self.nEx):
+            if(len(self.exStarts.split(","))!=self.nEx):
                 raise BEDexception("Exon starts and number of exons mismatch for transcript "+self.name)
             # Check that every element of exLengths and exStarts can be coerced to int
-            for ex in self.exStarts.split(",")[1:-1]:
+            for ex in self.exStarts.split(","):
                 try: int(ex)
                 except ValueError:
                     raise BEDexception("Exon starts are not int for transcript "+self.name)
-            for ex in self.exLengths.split(",")[1:-1]:
+            for ex in self.exLengths.split(","):
                 try: int(ex)
                 except ValueError:
                     raise BEDexception("Exon lengths are not int for transcript "+self.name)
@@ -104,6 +106,8 @@ class bedline(object):
         """
         out=[]
         for key in self.__fields[:self.bedType]:
+            if key=="exLengths": self.exLengths+=","
+            if key=="exStarts": self.exStarts+=","
             out.append(self.__dict__[key])
         return print(*out, sep="\t", end=end)
 
@@ -349,7 +353,18 @@ class bedline(object):
 
         intronStarts.append("")
         intronLens.append("")
-        result = [self.chr, self.start+int(exLens[0]), self.end-int(exLens[-2]), self.name, self.score, self.strand, self.start+int(exLens[0]), self.start+int(exLens[0]), self.color, len(intronStarts)-1, ','.join(str(x) for x in intronLens), ','.join(str(x) for x in intronStarts)]
+        result = [self.chr, 
+                  self.start+int(exLens[0]), 
+                  self.end-int(exLens[self.nEx-1]), 
+                  self.name, 
+                  self.score, 
+                  self.strand, 
+                  self.start+int(exLens[0]), 
+                  self.start+int(exLens[0]), 
+                  self.color, 
+                  len(intronStarts)-1, 
+                  ','.join(str(x) for x in intronLens), 
+                  ','.join(str(x) for x in intronStarts)]
         return(bedline(result))
 
 
@@ -435,8 +450,8 @@ class bedline(object):
             raise BEDexception("whichExon is only allowed if the transcripts are stranded. %s is not"%self.name)
 
         exons=list()
-        lengths=[int(x) for x in self.exLengths.split(",")[:-1]]
-        starts=[int(x) for x in self.exStarts.split(",")[:-1]]
+        lengths=[int(x) for x in self.exLengths.split(",")]
+        starts=[int(x) for x in self.exStarts.split(",")]
         for n in range(0,self.nEx):
             name=self.name
             if(appendExN == True): name+="_Exon"+'%03d'%(n+1)
